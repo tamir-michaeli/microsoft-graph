@@ -1,4 +1,7 @@
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -8,8 +11,8 @@ public class ManagementActivityApi {
 
     //FIXME should understand what is that means "Authorization" and where can we find it..
 
-    public ManagementActivityApi(String tenant_id, String operation) {
-        this.base_path = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/" + operation;
+    public ManagementActivityApi(String tenant_id) {
+        this.base_path = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
     }
 
     /**
@@ -39,22 +42,39 @@ public class ManagementActivityApi {
      *
      * @param subscriptionRequest
      */
-    public String startSubscriprion(SubscriptionRequest subscriptionRequest) {
-        String path = base_path + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
+    public int startSubscriprion(SubscriptionRequest subscriptionRequest) {
+        String path = base_path + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType().getValue() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
+
+        System.out.println("url= " + path);
+
         //post method
         URL obj = null;
         try {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("body", subscriptionRequest.getRequestBody().toString());
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            writer.write(subscriptionRequest.getRequestBody());
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = conn.getResponseCode();
+            System.out.println(conn.getResponseMessage());
+            return responseCode;
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -73,6 +93,9 @@ public class ManagementActivityApi {
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
             return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
@@ -113,7 +136,7 @@ public class ManagementActivityApi {
      *
      * @param subscriptionRequest
      */
-    public String listCurrentSubscriprions(SubscriptionRequest subscriptionRequest) {
+    public int listCurrentSubscriprions(SubscriptionRequest subscriptionRequest) {
         String path = base_path + "/subscriptions/list?PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         //get method
         URL obj = null;
@@ -121,12 +144,15 @@ public class ManagementActivityApi {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
+            return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -135,7 +161,7 @@ public class ManagementActivityApi {
      * @param subscriptionRequest
      */
 
-    public String listAvailableContent(SubscriptionRequest subscriptionRequest) {
+    public int listAvailableContent(SubscriptionRequest subscriptionRequest) {
         String path = base_path + "/subscriptions/content?contentType=" + subscriptionRequest.getContentType() + "&amp;startTime=" + subscriptionRequest.getStartTime() + "&amp;endTime=" + subscriptionRequest.getEndTime();
         //get method
         URL obj = null;
@@ -143,18 +169,21 @@ public class ManagementActivityApi {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
+            return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
     /**
      * Notifications are sent to the configured webhook for a subscription as new content becomes available.
      */
-    public String recievingNotifications(ContentType contentType, String webhookAuthId, String request) {
+    public int recievingNotifications(ContentType contentType, String webhookAuthId, String request) {
         String path = "https://webhook.myapp.com/o365/ ";
         //post method
         URL obj = null;
@@ -165,15 +194,17 @@ public class ManagementActivityApi {
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Webhook-AuthID", webhookAuthId);
             conn.setRequestProperty("body", request);
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
+            return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
-    public String retrievingContent(String contentId) {
+    public int retrievingContent(String contentId, String token) {
         String path = base_path + "/activity/feed/audit/" + contentId;
         //get method
         URL obj = null;
@@ -181,12 +212,15 @@ public class ManagementActivityApi {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Authorization", token);
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
+            return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -194,7 +228,7 @@ public class ManagementActivityApi {
      *
      * @param subscriptionRequest
      */
-    public String listNotifications(SubscriptionRequest subscriptionRequest) {
+    public int listNotifications(SubscriptionRequest subscriptionRequest) {
         String path = base_path + "/subscriptions/notifications?contentType=" + subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         //get method
         URL obj = null;
@@ -202,12 +236,15 @@ public class ManagementActivityApi {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
+            return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
     /**
@@ -216,7 +253,7 @@ public class ManagementActivityApi {
      * @param publisherId
      * @param acceptLanguage
      */
-    public String retrieveResourceFriendlyNames(String publisherId, String acceptLanguage) {
+    public int retrieveResourceFriendlyNames(String publisherId, String acceptLanguage, String token) {
         String path = base_path + "/resources/dlpSensitiveTypes?PublisherIdentifier=" + publisherId;
         //get method
         URL obj = null;
@@ -224,12 +261,15 @@ public class ManagementActivityApi {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-            return conn.getResponseMessage();
+            conn.setRequestProperty("Accept-Language", acceptLanguage);
+            conn.setRequestProperty("Authorization", token);
+            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            System.out.println(conn.getResponseMessage());
+            return conn.getResponseCode();
         } catch (MalformedURLException e) {
         } catch (IOException e) {
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 }

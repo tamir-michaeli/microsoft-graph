@@ -10,4 +10,8 @@ public enum ContentType {
     ContentType(String val) {
         value = val;
     }
+
+    public String getValue() {
+        return value;
+    }
 }

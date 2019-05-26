@@ -1,13 +1,15 @@
 import java.util.Date;
 
 public class SubscriptionRequest {
+    private String token;
     private ContentType contentType;
     private String publisherIdentifier;
-    private RequestBody requestBody;
+    private String requestBody;
     private Date startTime;
     private Date endTime;
 
-    public SubscriptionRequest(ContentType contentType, String publisherIdentifier, RequestBody requestBody, Date startTime, Date endTime) {
+    public SubscriptionRequest(String token, ContentType contentType, String publisherIdentifier, String requestBody, Date startTime, Date endTime) {
+        this.token = token;
         this.contentType = contentType;
         this.publisherIdentifier = publisherIdentifier;
         this.requestBody = requestBody;
@@ -23,7 +25,7 @@ public class SubscriptionRequest {
         return publisherIdentifier;
     }
 
-    public RequestBody getRequestBody() {
+    public String getRequestBody() {
         return requestBody;
     }
 
@@ -35,8 +37,8 @@ public class SubscriptionRequest {
         return startTime;
     }
 
-
-    public class RequestBody{
-
+    public String getToken() {
+        return token;
     }
+
 }
