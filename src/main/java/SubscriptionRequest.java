@@ -17,6 +17,15 @@ public class SubscriptionRequest {
         this.endTime = endTime;
     }
 
+    public SubscriptionRequest(String token, ContentType contentType, String publisherIdentifier, String requestBody) {
+        this.token = token;
+        this.contentType = contentType;
+        this.publisherIdentifier = publisherIdentifier;
+        this.requestBody = requestBody;
+        this.startTime = null;
+        this.endTime = null;
+    }
+
     public ContentType getContentType() {
         return contentType;
     }

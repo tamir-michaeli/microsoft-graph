@@ -145,7 +145,6 @@ public class ManagementActivityApi {
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
-            conn.setRequestProperty("Content-Length", String.valueOf(1000));
             System.out.println(conn.getResponseMessage());
             return conn.getResponseCode();
         } catch (MalformedURLException e) {
