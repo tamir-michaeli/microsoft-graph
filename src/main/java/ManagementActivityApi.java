@@ -43,7 +43,7 @@ public class ManagementActivityApi {
      * @param subscriptionRequest
      */
     public int startSubscriprion(SubscriptionRequest subscriptionRequest) {
-        String path = base_path + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType().getValue() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
+        String path = base_path + "/subscriptions/start?contentType=" + "Audit.General";// + "&PublisherIdentifier=46b472a7-c68e-4adf-8ade-3db49497518e" + subscriptionRequest.getPublisherIdentifier();
 
         System.out.println("url= " + path);
 
@@ -53,8 +53,7 @@ public class ManagementActivityApi {
             obj = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json; utf-8");
-            conn.setRequestProperty("Content-Length", String.valueOf(1000));
+            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
             conn.setReadTimeout(15000);
             conn.setConnectTimeout(15000);
@@ -204,7 +203,7 @@ public class ManagementActivityApi {
     }
 
     public int retrievingContent(String contentId, String token) {
-        String path = base_path + "/activity/feed/audit/" + contentId;
+        String path = "https://manage.office.com/api/v1.0/idohlogz.onmicrosoft.com/activity/feed/audit/CONTENTID";//base_path + "/activity/feed/audit/" + contentId;
         //get method
         URL obj = null;
         try {

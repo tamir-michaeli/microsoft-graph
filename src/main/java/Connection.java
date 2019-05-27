@@ -13,9 +13,6 @@ public class Connection {
     private final String clientId;
     private final String clientSecret;
 
-    private static HttpURLConnection con;
-
-
     public Connection(String tenantId, String clientId, String clientSecret) {
         this.tenantId = tenantId;
         this.clientId = clientId;
@@ -25,9 +22,10 @@ public class Connection {
 
     protected String connect() throws Exception {
         String path = "https://login.microsoftonline.com/" + tenantId + "/oauth2/token";
-        String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret;
+        String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret + "&resource=https://manage.office.com";
         byte[] requestBody = body.getBytes("UTF-8");
         String responseMessage;
+        HttpURLConnection con = null;
 
         try {
 
