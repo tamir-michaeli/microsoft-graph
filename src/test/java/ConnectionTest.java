@@ -1,45 +1,35 @@
-import org.mockserver.client.MockServerClient;
-import org.mockserver.integration.ClientAndServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class ConnectionTest {
-    private final Logger logger = LoggerFactory.getLogger(Connection.class);
-    private ClientAndServer mockServer;
-    private MockServerClient mockServerClient = null;
 
-    @BeforeTest
-    private void startMockServer() {
-        logger.debug("starting mock server");
-        mockServer = startClientAndServer(8070);
-
-        mockServerClient = new MockServerClient("localhost", 8070);
-        mockServerClient
-                .when(request().withMethod("POST"))
-                .respond(response().withStatusCode(200));
+    @Test
+    public void createHttpUrlConnectionTest() throws IOException {
+        HttpURLConnection con = Connection.createHttpConnection("http://localhost:8080/");
+        Assert.assertEquals(con.getRequestMethod(), "POST", "the request method isn't POST");
     }
 
-    @AfterTest
-    public void stopMockServer() {
-        logger.info("stoping mock server...");
-        mockServer.stop();
-    }
 
     @Test
     public void connectionTest() throws Exception {
-        String tenantId = "tenant-id";
-        String clientId = "client-id";
-        String clientSecret = "client-secret";
-        Connection connection = new Connection(tenantId, clientId, clientSecret);
-        String token = connection.connect();
-        Assert.assertNotNull(token);
+        MockWebServer server = new MockWebServer();
+        server.enqueue(new MockResponse().setResponseCode(200));
+        server.start(8080);
+        String url = "http://localhost:8080/";
+        HttpURLConnection con = Connection.createHttpConnection(url);
+        Connection.connect(con, "0000", "0000");
+
+        RecordedRequest recordedRequest = server.takeRequest();
+        Assert.assertEquals(recordedRequest.getRequestUrl().toString(), url);
+        Assert.assertEquals(recordedRequest.getMethod(), "POST", "the request method isn't POST");
+        Assert.assertEquals(recordedRequest.getHeader("Content-Type"), "application/x-www-form-urlencoded", "the value of 'Content-Type' isn't as expected");
+        Assert.assertEquals(recordedRequest.getHeader("User-Agent"), "Java client", "the value of 'User-Agent' isn't as expected");
+
     }
 }

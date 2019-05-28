@@ -1,42 +1,35 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import okhttp3.HttpUrl;
+import org.mockserver.model.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 
 public class Connection {
-    private final String tenantId;
-    private final String clientId;
-    private final String clientSecret;
 
-    public Connection(String tenantId, String clientId, String clientSecret) {
-        this.tenantId = tenantId;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
+    public static HttpURLConnection createHttpConnection(String url) throws IOException {
+        HttpURLConnection con = null;
+        URL myurl = new URL(url);
+        con = (HttpURLConnection) myurl.openConnection();
+
+        con.setDoOutput(true);
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", "Java client");
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        return con;
     }
 
-
-    protected String connect() throws Exception {
-        String path = "https://login.microsoftonline.com/" + tenantId + "/oauth2/token";
+    public static HttpResponse connect(HttpURLConnection con, String clientId, String clientSecret) throws Exception {
         String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret + "&resource=https://manage.office.com";
         byte[] requestBody = body.getBytes("UTF-8");
         String responseMessage;
-        HttpURLConnection con = null;
-
         try {
-
-            URL myurl = new URL(path);
-            con = (HttpURLConnection) myurl.openConnection();
-
-            con.setDoOutput(true);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("User-Agent", "Java client");
-            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
             try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write(requestBody);
             }
@@ -61,7 +54,9 @@ public class Connection {
 
             con.disconnect();
         }
-        return extractToken(responseMessage);
+        HttpResponse httpResponse = HttpResponse.response(responseMessage);
+
+        return httpResponse;
     }
 
     private String extractToken(String responseMessage) {
@@ -73,4 +68,5 @@ public class Connection {
         }
         return jsonObject.get("access_token").toString();
     }
+
 }
