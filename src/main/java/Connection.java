@@ -12,6 +12,10 @@ import java.net.URL;
 
 
 public class Connection {
+    /**
+     * base_url = "https://login.microsoftonline.com/" + tenantId + "/oauth2/token";
+     */
+
 
     public static HttpURLConnection createHttpConnection(String url) throws IOException {
         HttpURLConnection con = null;

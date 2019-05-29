@@ -1,6 +1,7 @@
 import java.util.Date;
 
 public class SubscriptionRequest {
+    private String path;
     private String token;
     private ContentType contentType;
     private String publisherIdentifier;
@@ -8,7 +9,8 @@ public class SubscriptionRequest {
     private Date startTime;
     private Date endTime;
 
-    public SubscriptionRequest(String token, ContentType contentType, String publisherIdentifier, String requestBody, Date startTime, Date endTime) {
+    public SubscriptionRequest(String path, String token, ContentType contentType, String publisherIdentifier, String requestBody, Date startTime, Date endTime) {
+        this.path = path;
         this.token = token;
         this.contentType = contentType;
         this.publisherIdentifier = publisherIdentifier;
@@ -17,7 +19,8 @@ public class SubscriptionRequest {
         this.endTime = endTime;
     }
 
-    public SubscriptionRequest(String token, ContentType contentType, String publisherIdentifier, String requestBody) {
+    public SubscriptionRequest(String path, String token, ContentType contentType, String publisherIdentifier, String requestBody) {
+        this.path = path;
         this.token = token;
         this.contentType = contentType;
         this.publisherIdentifier = publisherIdentifier;
@@ -50,4 +53,8 @@ public class SubscriptionRequest {
         return token;
     }
 
+
+    public String getPath() {
+        return path;
+    }
 }
