@@ -1,4 +1,3 @@
-import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.gson.JsonObject;
 import io.logz.sender.FormattedLogMessage;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
@@ -12,7 +11,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Logz.io Data Access Object.
