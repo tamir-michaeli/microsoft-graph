@@ -9,36 +9,8 @@ import java.net.URL;
 public class ManagementActivityApi {
     /**
      * base_path = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
-     * */
-    /* **************************************** */
-
-    /**
-     * post method to start subscription.
-     * JSon example: {
-     * "webhook" : {
-     * "address": "https://webhook.myapp.com/o365/",
-     * "authId": "o365activityapinotification",
-     * "expiration": ""
-     * }
-     * }
-     * <p>
-     * Response example:
-     * HTTP/1.1 200 OK
-     * Content-Type: application/json; charset=utf-8
-     * <p>
-     * {
-     * "contentType": "Audit.SharePoint",
-     * "status": "enabled",
-     * "webhook": {
-     * "status": "enabled",
-     * "address":  "https://webhook.myapp.com/o365/",
-     * "authId": "o365activityapinotification",
-     * "expiration": null
-     * }
-     * }
-     *
-     * @param subscriptionRequest
      */
+    /* **************************************** */
     public static HttpResponse startSubscriprion(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType().getValue();// + "&PublisherIdentifier=46b472a7-c68e-4adf-8ade-3db49497518e" + subscriptionRequest.getPublisherIdentifier();
 
@@ -113,6 +85,54 @@ public class ManagementActivityApi {
         return httpResponse;
     }
 
+
+    public static HttpResponse retrievingContent(String path, String contentId, String token, String OrganizationId) throws Exception {
+        //get method
+        URL obj = null;
+        obj = new URL(path + OrganizationId + "/activity/feed/audit/" + contentId);
+        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", token);
+        conn.setRequestProperty("Content-Length", String.valueOf(1000));
+        System.out.println(conn.getResponseMessage());
+        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
+        return httpResponse;
+    }
+
+    public static HttpResponse listNotifications(SubscriptionRequest subscriptionRequest) throws Exception {
+        String path = subscriptionRequest.getPath() + "/subscriptions/notifications?contentType=" +
+                subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
+        URL obj = null;
+        obj = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+        conn.setRequestProperty("Content-Length", String.valueOf(1000));
+        System.out.println(conn.getResponseMessage());
+        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
+        return httpResponse;
+
+    }
+
+    public static HttpResponse retrieveResourceFriendlyNames(String publisherId, String acceptLanguage, String
+            token, String base_path) throws Exception {
+        String path = base_path + "/resources/dlpSensitiveTypes?PublisherIdentifier=" + publisherId;
+        //get method
+        URL obj = null;
+
+        obj = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept-Language", acceptLanguage);
+        conn.setRequestProperty("Authorization", token);
+        conn.setRequestProperty("Content-Length", String.valueOf(1000));
+        System.out.println(conn.getResponseMessage());
+        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
+        return httpResponse;
+
+    }
+
+
     /**
      * String path = "https://webhook.myapp.com/o365/ ";
      */
@@ -133,52 +153,5 @@ public class ManagementActivityApi {
 
     }
 
-    /**
-     * String path = "https://manage.office.com/api/v1.0/idohlogz.onmicrosoft.com/activity/feed/audit/CONTENTID";//base_path + "/activity/feed/audit/" + contentId;
-     */
-    public static HttpResponse retrievingContent(String path, String contentId, String token) throws Exception {
-        //get method
-        URL obj = null;
-        obj = new URL(path);
-        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Authorization", token);
-        conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        System.out.println(conn.getResponseMessage());
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        return httpResponse;
 
-    }
-
-    public static HttpResponse listNotifications(SubscriptionRequest subscriptionRequest) throws Exception {
-        String path = subscriptionRequest.getPath() + "/subscriptions/notifications?contentType=" +
-                subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
-        URL obj = null;
-        obj = new URL(path);
-        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
-        conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        System.out.println(conn.getResponseMessage());
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        return httpResponse;
-
-    }
-
-    public static HttpResponse retrieveResourceFriendlyNames(String publisherId, String acceptLanguage, String token, String base_path) throws Exception {
-        String path = base_path + "/resources/dlpSensitiveTypes?PublisherIdentifier=" + publisherId;
-        //get method
-        URL obj = null;
-
-        obj = new URL(path);
-        HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Accept-Language", acceptLanguage);
-        conn.setRequestProperty("Authorization", token);
-        conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        System.out.println(conn.getResponseMessage());
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        return httpResponse;
-
-    }
 }

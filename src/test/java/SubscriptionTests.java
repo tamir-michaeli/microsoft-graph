@@ -82,7 +82,7 @@ public class SubscriptionTests {
 
     @Test
     public void retrievingContentTest() throws Exception {
-        ManagementActivityApi.retrievingContent(path, "", "");
+        ManagementActivityApi.retrievingContent(path, "", "", "");
         RecordedRequest recordedRequest = server.takeRequest();
         Assert.assertEquals(recordedRequest.getMethod(), "GET", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), path, "request method isn't Post");
