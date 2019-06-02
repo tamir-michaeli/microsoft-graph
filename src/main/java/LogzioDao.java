@@ -1,5 +1,5 @@
-import com.google.gson.JsonObject;
 import io.logz.sender.FormattedLogMessage;
+import io.logz.sender.com.google.gson.JsonObject;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
 import io.logz.sender.exceptions.LogzioServerErrorException;
 import net.sf.json.JSONArray;

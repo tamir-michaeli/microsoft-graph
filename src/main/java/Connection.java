@@ -1,6 +1,5 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import okhttp3.HttpUrl;
 import org.mockserver.model.HttpResponse;
 
 import java.io.BufferedReader;
