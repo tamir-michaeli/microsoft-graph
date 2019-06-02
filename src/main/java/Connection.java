@@ -38,7 +38,6 @@ public class Connection {
             }
 
             StringBuilder content;
-
             try (BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()))) {
 
