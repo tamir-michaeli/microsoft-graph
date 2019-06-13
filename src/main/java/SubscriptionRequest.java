@@ -5,7 +5,6 @@ public class SubscriptionRequest {
     private String token;
     private String contentType;
     private String publisherIdentifier;
-    private String requestBody;
     private Date startTime;
     private Date endTime;
 
@@ -14,7 +13,6 @@ public class SubscriptionRequest {
         this.token = token;
         this.contentType = contentType;
         this.publisherIdentifier = publisherIdentifier;
-        this.requestBody = requestBody;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -24,7 +22,6 @@ public class SubscriptionRequest {
         this.token = token;
         this.contentType = contentType;
         this.publisherIdentifier = publisherIdentifier;
-        this.requestBody = requestBody;
         this.startTime = null;
         this.endTime = null;
     }
@@ -35,10 +32,6 @@ public class SubscriptionRequest {
 
     public String getPublisherIdentifier() {
         return publisherIdentifier;
-    }
-
-    public String getRequestBody() {
-        return requestBody;
     }
 
     public Date getEndTime() {

@@ -15,9 +15,8 @@ public class Connection {
     private static final Logger LOGGER = Logger.getLogger(Connection.class.getName());
 
     public static HttpURLConnection createHttpConnection(String url) throws IOException {
-        HttpURLConnection con = null;
-        URL myurl = new URL(url);
-        con = (HttpURLConnection) myurl.openConnection();
+        URL myUrl = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) myUrl.openConnection();
         con.setDoOutput(true);
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", "Java client");
@@ -48,7 +47,6 @@ public class Connection {
         }
         HttpResponse httpResponse = HttpResponse.response(responseMessage);
         LOGGER.info("connect to office 365: response code = " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-
         return httpResponse;
     }
 
@@ -62,5 +60,4 @@ public class Connection {
         }
         return jsonObject.get("access_token").toString();
     }
-
 }

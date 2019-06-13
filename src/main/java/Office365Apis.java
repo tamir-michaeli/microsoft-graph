@@ -59,14 +59,14 @@ public class Office365Apis {
     public static void startSubscription() throws Exception {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId);
-        HttpResponse httpResponse = ManagementActivityApi.startSubscriprion(subscriptionRequest);
+        HttpResponse httpResponse = ManagementActivityApi.startSubscription(subscriptionRequest);
         Logzio.sender(logzio_token, httpResponse.toString());
     }
 
     public static void stopSubscription() throws Exception {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId);
-        HttpResponse httpResponse = ManagementActivityApi.stopSubscriprion(subscriptionRequest);
+        HttpResponse httpResponse = ManagementActivityApi.stopSubscription(subscriptionRequest);
         Logzio.sender(logzio_token, httpResponse.toString());
     }
 
@@ -91,7 +91,7 @@ public class Office365Apis {
     public static void listNotifications() throws Exception {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId);
-        HttpResponse httpResponse = ManagementActivityApi.stopSubscriprion(subscriptionRequest);
+        HttpResponse httpResponse = ManagementActivityApi.stopSubscription(subscriptionRequest);
         Logzio.sender(logzio_token, httpResponse.toString());
     }
 
@@ -103,7 +103,7 @@ public class Office365Apis {
 
     public static void recievingNotifications() throws Exception {
         String path = "https://webhook.myapp.com/o365/ "; //FIXME
-        HttpResponse httpResponse = ManagementActivityApi.recievingNotifications(path, contentType, webhookAuthId);
+        HttpResponse httpResponse = ManagementActivityApi.receivingNotifications(path, contentType, webhookAuthId);
         Logzio.sender(logzio_token, httpResponse.toString());
     }
 

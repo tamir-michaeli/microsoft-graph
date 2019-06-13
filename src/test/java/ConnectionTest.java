@@ -15,7 +15,6 @@ public class ConnectionTest {
         Assert.assertEquals(con.getRequestMethod(), "POST", "the request method isn't POST");
     }
 
-
     @Test
     public void connectionTest() throws Exception {
         MockWebServer server = new MockWebServer();
@@ -30,6 +29,5 @@ public class ConnectionTest {
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "the request method isn't POST");
         Assert.assertEquals(recordedRequest.getHeader("Content-Type"), "application/x-www-form-urlencoded", "the value of 'Content-Type' isn't as expected");
         Assert.assertEquals(recordedRequest.getHeader("User-Agent"), "Java client", "the value of 'User-Agent' isn't as expected");
-
     }
 }

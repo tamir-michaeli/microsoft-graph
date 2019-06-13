@@ -26,22 +26,18 @@ public class SubscriptionTests {
 
     @Test
     public void startSubscriptionTest() throws Exception {
-        String requestBody = "{ \n\"webhook\" : {\n" +
-                "        \"address\": \"https://webhook.myapp.com/o365/\",\n" +
-                "        \"authId\": \"o365activityapinotification\"\n   }\n}";
         subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
-        ManagementActivityApi.startSubscriprion(subscriptionRequest);
+        ManagementActivityApi.startSubscription(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
         String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType();
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), expectedUrl, "request method isn't Post");
-
     }
 
     @Test
     public void stopSubscriptionTest() throws Exception {
         subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
-        ManagementActivityApi.stopSubscriprion(subscriptionRequest);
+        ManagementActivityApi.stopSubscription(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
         String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/stop?contentType=" + subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "request method isn't Post");
@@ -71,8 +67,8 @@ public class SubscriptionTests {
 
 
     @Test
-    public void recievingNotificationsTest() throws Exception {
-        ManagementActivityApi.recievingNotifications(path, ContentType.AZURE_ACTIVE_DIRECTORY.getValue(), "");
+    public void receivingNotificationsTest() throws Exception {
+        ManagementActivityApi.receivingNotifications(path, ContentType.AZURE_ACTIVE_DIRECTORY.getValue(), "");
         RecordedRequest recordedRequest = server.takeRequest();
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), path, "request method isn't Post");

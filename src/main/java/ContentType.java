@@ -14,11 +14,4 @@ public enum ContentType {
     public String getValue() {
         return value;
     }
-
-    public static boolean find(ContentType contentType){
-        return contentType.equals(AZURE_ACTIVE_DIRECTORY) ||
-                contentType.equals(EXCHANGE) ||
-                contentType.equals(SHARE_POINT) ||
-                contentType.equals(GENERAL);
-    }
 }
