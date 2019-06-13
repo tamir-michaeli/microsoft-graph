@@ -3,13 +3,13 @@ import java.util.Date;
 public class SubscriptionRequest {
     private String path;
     private String token;
-    private ContentType contentType;
+    private String contentType;
     private String publisherIdentifier;
     private String requestBody;
     private Date startTime;
     private Date endTime;
 
-    public SubscriptionRequest(String path, String token, ContentType contentType, String publisherIdentifier, String requestBody, Date startTime, Date endTime) {
+    public SubscriptionRequest(String path, String token, String contentType, String publisherIdentifier, Date startTime, Date endTime) {
         this.path = path;
         this.token = token;
         this.contentType = contentType;
@@ -19,7 +19,7 @@ public class SubscriptionRequest {
         this.endTime = endTime;
     }
 
-    public SubscriptionRequest(String path, String token, ContentType contentType, String publisherIdentifier, String requestBody) {
+    public SubscriptionRequest(String path, String token, String contentType, String publisherIdentifier) {
         this.path = path;
         this.token = token;
         this.contentType = contentType;
@@ -29,7 +29,7 @@ public class SubscriptionRequest {
         this.endTime = null;
     }
 
-    public ContentType getContentType() {
+    public String getContentType() {
         return contentType;
     }
 

@@ -6,18 +6,9 @@ public class Office365 {
     private String clientSecret;
     private String publisherId;
     private String contentType;
-    private int interval;
+    private Integer interval;
+    private String acceptLanguage;
 
-    public Office365(String logzioToken, String logzioHost, String tenantId, String clientId, String clientSecret, String publisherId, String contentType, int interval) {
-        this.logzioToken = logzioToken;
-        this.logzioHost = logzioHost;
-        this.tenantId = tenantId;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.publisherId = publisherId;
-        this.contentType = contentType;
-        this.interval = interval;
-    }
 
     public void setLogzioToken(String logzioToken) {
         this.logzioToken = logzioToken;
@@ -51,6 +42,10 @@ public class Office365 {
         this.interval = interval;
     }
 
+    public void setAcceptLanguage(String acceptLanguage) {
+        this.acceptLanguage = acceptLanguage;
+    }
+
     public String getLogzioToken() {
         return logzioToken;
     }
@@ -81,5 +76,9 @@ public class Office365 {
 
     public int getInterval() {
         return interval;
+    }
+
+    public String getAcceptLanguage() {
+        return acceptLanguage;
     }
 }

@@ -29,11 +29,10 @@ public class SubscriptionTests {
         String requestBody = "{ \n\"webhook\" : {\n" +
                 "        \"address\": \"https://webhook.myapp.com/o365/\",\n" +
                 "        \"authId\": \"o365activityapinotification\"\n   }\n}";
-        System.out.println(requestBody);
-        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT, "", requestBody);
+        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
         ManagementActivityApi.startSubscriprion(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
-        String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType().getValue();
+        String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType();
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), expectedUrl, "request method isn't Post");
 
@@ -41,17 +40,17 @@ public class SubscriptionTests {
 
     @Test
     public void stopSubscriptionTest() throws Exception {
-        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT, "", null);
+        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
         ManagementActivityApi.stopSubscriprion(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
-        String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/stop?contentType=" + subscriptionRequest.getContentType().getValue() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
+        String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/stop?contentType=" + subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), expectedUrl, "request method isn't Post");
     }
 
     @Test
     public void listCurrentSubscriprionsTest() throws Exception {
-        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT, "", null);
+        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
         ManagementActivityApi.listCurrentSubscriprions(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
         String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/list?PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
@@ -61,7 +60,7 @@ public class SubscriptionTests {
 
     @Test
     public void listAvailableContentTest() throws Exception {
-        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT, "", null);
+        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
         ManagementActivityApi.listAvailableContent(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
         String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/content?contentType=" + subscriptionRequest.getContentType()
@@ -73,7 +72,7 @@ public class SubscriptionTests {
 
     @Test
     public void recievingNotificationsTest() throws Exception {
-        ManagementActivityApi.recievingNotifications(path, ContentType.AZURE_ACTIVE_DIRECTORY, "", "");
+        ManagementActivityApi.recievingNotifications(path, ContentType.AZURE_ACTIVE_DIRECTORY.getValue(), "");
         RecordedRequest recordedRequest = server.takeRequest();
         Assert.assertEquals(recordedRequest.getMethod(), "POST", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), path, "request method isn't Post");
@@ -91,7 +90,7 @@ public class SubscriptionTests {
 
     @Test
     public void listNotificationsTest() throws Exception {
-        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT, "", null);
+        subscriptionRequest = new SubscriptionRequest(path, "", ContentType.SHARE_POINT.getValue(), "");
         ManagementActivityApi.listNotifications(subscriptionRequest);
         RecordedRequest recordedRequest = server.takeRequest();
         String expectedUrl = subscriptionRequest.getPath() + "/subscriptions/notifications?contentType=" +
@@ -106,7 +105,6 @@ public class SubscriptionTests {
         ManagementActivityApi.retrieveResourceFriendlyNames("", "en-US,en;q=0.5", "", path);
         RecordedRequest recordedRequest = server.takeRequest();
         String expectedUrl = path + "/resources/dlpSensitiveTypes?PublisherIdentifier=" + "";
-        ;
         Assert.assertEquals(recordedRequest.getMethod(), "GET", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), expectedUrl, "request method isn't Post");
     }

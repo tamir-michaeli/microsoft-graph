@@ -8,19 +8,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Logger;
 
 
 public class Connection {
-    /**
-     * base_url = "https://login.microsoftonline.com/" + tenantId + "/oauth2/token";
-     */
-
+    private static final Logger LOGGER = Logger.getLogger(Connection.class.getName());
 
     public static HttpURLConnection createHttpConnection(String url) throws IOException {
         HttpURLConnection con = null;
         URL myurl = new URL(url);
         con = (HttpURLConnection) myurl.openConnection();
-
         con.setDoOutput(true);
         con.setRequestMethod("POST");
         con.setRequestProperty("User-Agent", "Java client");
@@ -36,27 +33,21 @@ public class Connection {
             try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write(requestBody);
             }
-
             StringBuilder content;
-            try (BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()))) {
-
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
                 String line;
                 content = new StringBuilder();
-
                 while ((line = in.readLine()) != null) {
                     content.append(line);
                     content.append(System.lineSeparator());
                 }
             }
             responseMessage = content.toString();
-
-
         } finally {
-
             con.disconnect();
         }
         HttpResponse httpResponse = HttpResponse.response(responseMessage);
+        LOGGER.info("connect to office 365: response code = " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
 
         return httpResponse;
     }
@@ -66,6 +57,7 @@ public class Connection {
         try {
             jsonObject = new JsonParser().parse(responseMessage).getAsJsonObject();
         } catch (Exception e) {
+            LOGGER.warning("extract token from body message: " + e.getMessage());
             throw new IllegalArgumentException("Not a valid json received in body of request", e);
         }
         return jsonObject.get("access_token").toString();
