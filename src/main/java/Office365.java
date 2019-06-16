@@ -5,7 +5,7 @@ public class Office365 {
     private String clientId;
     private String clientSecret;
     private String publisherId;
-    private String contentType;
+    private String contentType; // FIXME should be list of content types
     private Integer interval;
     private String acceptLanguage;
 

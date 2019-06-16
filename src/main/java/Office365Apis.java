@@ -145,11 +145,12 @@ public class Office365Apis {
     }
 
     public void recievingNotifications() throws Exception {
-        String path = "https://webhook.myapp.com/o365/ "; //FIXME
+        String path = "https://webhook.myapp.com/o365/ "; //FIXME this address is the address returned by listSubscription endpoint
         ManagementActivityApi.receivingNotifications(path, contentType, webhookAuthId);
     }
 
     public void retrievingContent() throws Exception {
+        //FIXME this endpoint doesn't return available content should be fixed
         String path = "https://manage.office.com/api/v1.0/";
         AvailableContent availableContent = ManagementActivityApi.retrievingContent(path, contentId, access_token, organizationId);
         String logs = getContentLogs(availableContent);
