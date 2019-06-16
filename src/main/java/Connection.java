@@ -1,5 +1,3 @@
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.mockserver.model.HttpResponse;
 
 import java.io.BufferedReader;
@@ -48,16 +46,5 @@ public class Connection {
         HttpResponse httpResponse = HttpResponse.response(responseMessage);
         LOGGER.info("connect to office 365: response code = " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
         return httpResponse;
-    }
-
-    private String extractToken(String responseMessage) {
-        JsonObject jsonObject;
-        try {
-            jsonObject = new JsonParser().parse(responseMessage).getAsJsonObject();
-        } catch (Exception e) {
-            LOGGER.warning("extract token from body message: " + e.getMessage());
-            throw new IllegalArgumentException("Not a valid json received in body of request", e);
-        }
-        return jsonObject.get("access_token").toString();
     }
 }

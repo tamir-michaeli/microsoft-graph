@@ -65,7 +65,6 @@ public class SubscriptionTests {
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), expectedUrl, "request method isn't Post");
     }
 
-
     @Test
     public void receivingNotificationsTest() throws Exception {
         ManagementActivityApi.receivingNotifications(path, ContentType.AZURE_ACTIVE_DIRECTORY.getValue(), "");
@@ -74,7 +73,6 @@ public class SubscriptionTests {
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), path, "request method isn't Post");
     }
 
-
     @Test
     public void retrievingContentTest() throws Exception {
         ManagementActivityApi.retrievingContent(path, "", "", "");
@@ -82,7 +80,6 @@ public class SubscriptionTests {
         Assert.assertEquals(recordedRequest.getMethod(), "GET", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), path, "request method isn't Post");
     }
-
 
     @Test
     public void listNotificationsTest() throws Exception {
@@ -94,7 +91,6 @@ public class SubscriptionTests {
         Assert.assertEquals(recordedRequest.getMethod(), "GET", "request method isn't Post");
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), expectedUrl, "request method isn't Post");
     }
-
 
     @Test
     public void retrieveResourceFriendlyNamesTest() throws Exception {

@@ -43,6 +43,7 @@ public class ManagementActivityApi {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
+        conn.setRequestProperty("Content-Length", "1000");
         HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
         LOGGER.info("list Current subscriptions request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
         return httpResponse;
@@ -108,7 +109,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Webhook-AuthID", webhookAuthId);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
         HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("recieving notifications request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
+        LOGGER.info("receiving notifications request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
         return httpResponse;
     }
 }

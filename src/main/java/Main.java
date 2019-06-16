@@ -6,6 +6,7 @@ public class Main {
                     Office365Apis.getInput();
                     Office365Apis.createConnectionToAzurePortal();
                     Office365Apis.startSubscription();
+                    Office365Apis.listAvailableContent();
                     Thread.sleep(Office365Apis.interval);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -12,11 +12,11 @@ import java.util.logging.Logger;
 public class Logzio {
     private static final Logger LOGGER = Logger.getLogger(Logzio.class.getName());
 
-    public static void sender(String logzioToken, String msg) throws LogzioParameterErrorException {
+    public static void sender(String logzioToken, String msg, String url) throws LogzioParameterErrorException {
         LOGGER.info("sending msg to logz.io");
         HttpsRequestConfiguration conf = HttpsRequestConfiguration
                 .builder()
-                .setLogzioListenerUrl("https://listener.logz.io:8071/")
+                .setLogzioListenerUrl(url)
                 .setLogzioType("javaSenderType")
                 .setLogzioToken(logzioToken)
                 .build();
@@ -33,13 +33,19 @@ public class Logzio {
                 .build();
 
         logzioSender.start();
+        System.out.println(msg);
         JsonObject jsonMessage = createLogMessage(msg); // create JsonObject to send to logz.io
         logzioSender.send(jsonMessage);
     }
 
+    public static void sender(String logzioToken, String msg) throws LogzioParameterErrorException {
+        sender(logzioToken, msg, "https://listener.logz.io:8071/");
+    }
+
+
     private static JsonObject createLogMessage(String msg) {
         Gson g = new Gson();
-        JsonObject object = g.fromJson(msg, JsonObject.class);
+        JsonObject object = g.fromJson(msg, io.logz.sender.com.google.gson.JsonObject.class);
         return object;
     }
 }

@@ -80,8 +80,8 @@ public class Office365Apis {
     public static void listAvailableContent() throws Exception {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
 
-        Date time1 = new SimpleDateFormat("dd/MM/yyyy").parse(startTime);
-        Date time2 = new SimpleDateFormat("dd/MM/yyyy").parse(endTime);
+        Date time1 = new SimpleDateFormat("dd/MM/yyyy").parse("10/12/2012");
+        Date time2 = new SimpleDateFormat("dd/MM/yyyy").parse("10/12/2012");
 
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId, time1, time2);
         HttpResponse httpResponse = ManagementActivityApi.listAvailableContent(subscriptionRequest);
@@ -91,7 +91,7 @@ public class Office365Apis {
     public static void listNotifications() throws Exception {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId);
-        HttpResponse httpResponse = ManagementActivityApi.stopSubscription(subscriptionRequest);
+        HttpResponse httpResponse = ManagementActivityApi.listNotifications(subscriptionRequest);
         Logzio.sender(logzio_token, httpResponse.toString());
     }
 
