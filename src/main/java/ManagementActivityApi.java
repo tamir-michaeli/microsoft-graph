@@ -2,6 +2,7 @@ import org.mockserver.model.HttpResponse;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class ManagementActivityApi {
@@ -49,8 +50,7 @@ public class ManagementActivityApi {
         return httpResponse;
     }
 
-
-    public static HttpResponse listAvailableContent(SubscriptionRequest subscriptionRequest) throws Exception {
+    public static ArrayList<AvailableContent> listAvailableContent(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/content?contentType=" + subscriptionRequest.getContentType()
                 + "&amp;startTime=" + subscriptionRequest.getStartTime() + "&amp;endTime=" + subscriptionRequest.getEndTime();
         URL url = new URL(path);
@@ -58,21 +58,20 @@ public class ManagementActivityApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("list available content request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        ArrayList<AvailableContent> availableContents = (ArrayList<AvailableContent>) conn.getContent();
+        LOGGER.info("list available content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return availableContents;
     }
 
-
-    public static HttpResponse retrievingContent(String path, String contentId, String token, String OrganizationId) throws Exception {
+    public static AvailableContent retrievingContent(String path, String contentId, String token, String OrganizationId) throws Exception {
         URL url = new URL(path + OrganizationId + "/activity/feed/audit/" + contentId);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("retrieve content request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        AvailableContent availableContent = (AvailableContent) conn.getContent();
+        LOGGER.info("list available content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return availableContent;
     }
 
     public static HttpResponse listNotifications(SubscriptionRequest subscriptionRequest) throws Exception {

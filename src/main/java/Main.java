@@ -1,19 +1,18 @@
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        Office365Apis office365Apis = new Office365Apis();
+        office365Apis.startSubscription();
         Runnable runnable = () -> {
-            while (true) {
                 try {
-                    Office365Apis.getInput();
-                    Office365Apis.createConnectionToAzurePortal();
-                    Office365Apis.startSubscription();
-                    Office365Apis.listAvailableContent();
-                    Thread.sleep(Office365Apis.interval);
+                    office365Apis.listAvailableContent();
+                    Thread.sleep(office365Apis.getInterval());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
         };
         Thread thread = new Thread(runnable);
         thread.start();
+
+        office365Apis.stopSubscription();
     }
 }
