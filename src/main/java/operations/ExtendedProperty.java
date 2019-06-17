@@ -13,7 +13,7 @@ public class ExtendedProperty {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -21,7 +21,7 @@ public class ExtendedProperty {
         return value;
     }
 
-    public void setValue(String value) {
+    private void setValue(String value) {
         this.value = value;
     }
 }

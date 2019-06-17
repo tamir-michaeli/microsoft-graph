@@ -66,7 +66,7 @@ public class RetrievingContent {
         return creationTime;
     }
 
-    public void setCreationTime(String creationTime) {
+    private void setCreationTime(String creationTime) {
         this.creationTime = creationTime;
     }
 
@@ -74,7 +74,7 @@ public class RetrievingContent {
         return id;
     }
 
-    public void setId(String id) {
+    private void setId(String id) {
         this.id = id;
     }
 
@@ -82,7 +82,7 @@ public class RetrievingContent {
         return operation;
     }
 
-    public void setOperation(String operation) {
+    private void setOperation(String operation) {
         this.operation = operation;
     }
 
@@ -90,7 +90,7 @@ public class RetrievingContent {
         return organizationId;
     }
 
-    public void setOrganizationId(String organizationId) {
+    private void setOrganizationId(String organizationId) {
         this.organizationId = organizationId;
     }
 
@@ -98,7 +98,7 @@ public class RetrievingContent {
         return recordType;
     }
 
-    public void setRecordType(int recordType) {
+    private void setRecordType(int recordType) {
         this.recordType = recordType;
     }
 
@@ -106,7 +106,7 @@ public class RetrievingContent {
         return resultStatus;
     }
 
-    public void setResultStatus(String resultStatus) {
+    private void setResultStatus(String resultStatus) {
         this.resultStatus = resultStatus;
     }
 
@@ -114,7 +114,7 @@ public class RetrievingContent {
         return userKey;
     }
 
-    public void setUserKey(String userKey) {
+    private void setUserKey(String userKey) {
         this.userKey = userKey;
     }
 
@@ -122,7 +122,7 @@ public class RetrievingContent {
         return userType;
     }
 
-    public void setUserType(int userType) {
+    private void setUserType(int userType) {
         this.userType = userType;
     }
 
@@ -130,7 +130,7 @@ public class RetrievingContent {
         return workload;
     }
 
-    public void setWorkload(String workload) {
+    private void setWorkload(String workload) {
         this.workload = workload;
     }
 
@@ -138,7 +138,7 @@ public class RetrievingContent {
         return clientIP;
     }
 
-    public void setClientIP(String clientIP) {
+    private void setClientIP(String clientIP) {
         this.clientIP = clientIP;
     }
 
@@ -146,7 +146,7 @@ public class RetrievingContent {
         return objectId;
     }
 
-    public void setObjectId(String objectId) {
+    private void setObjectId(String objectId) {
         this.objectId = objectId;
     }
 
@@ -154,7 +154,7 @@ public class RetrievingContent {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    private void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -162,7 +162,7 @@ public class RetrievingContent {
         return azureActiveDirectoryEventType;
     }
 
-    public void setAzureActiveDirectoryEventType(int azureActiveDirectoryEventType) {
+    private void setAzureActiveDirectoryEventType(int azureActiveDirectoryEventType) {
         this.azureActiveDirectoryEventType = azureActiveDirectoryEventType;
     }
 
@@ -170,7 +170,7 @@ public class RetrievingContent {
         return extendedProperties;
     }
 
-    public void setExtendedProperties(ArrayList<ExtendedProperty> extendedProperties) {
+    private void setExtendedProperties(ArrayList<ExtendedProperty> extendedProperties) {
         this.extendedProperties = extendedProperties;
     }
 
@@ -178,7 +178,7 @@ public class RetrievingContent {
         return client;
     }
 
-    public void setClient(String client) {
+    private void setClient(String client) {
         this.client = client;
     }
 
@@ -186,7 +186,7 @@ public class RetrievingContent {
         return loginStatus;
     }
 
-    public void setLoginStatus(long loginStatus) {
+    private void setLoginStatus(long loginStatus) {
         this.loginStatus = loginStatus;
     }
 
@@ -194,7 +194,7 @@ public class RetrievingContent {
         return userDomain;
     }
 
-    public void setUserDomain(String userDomain) {
+    private void setUserDomain(String userDomain) {
         this.userDomain = userDomain;
     }
 
@@ -202,7 +202,7 @@ public class RetrievingContent {
         return actor;
     }
 
-    public void setActor(ArrayList<Info> actor) {
+    private void setActor(ArrayList<Info> actor) {
         this.actor = actor;
     }
 
@@ -210,7 +210,7 @@ public class RetrievingContent {
         return actorContextId;
     }
 
-    public void setActorContextId(String actorContextId) {
+    private void setActorContextId(String actorContextId) {
         this.actorContextId = actorContextId;
     }
 
@@ -218,7 +218,7 @@ public class RetrievingContent {
         return interSystemsId;
     }
 
-    public void setInterSystemsId(String interSystemsId) {
+    private void setInterSystemsId(String interSystemsId) {
         this.interSystemsId = interSystemsId;
     }
 
@@ -226,7 +226,7 @@ public class RetrievingContent {
         return intraSystemId;
     }
 
-    public void setIntraSystemId(String intraSystemId) {
+    private void setIntraSystemId(String intraSystemId) {
         this.intraSystemId = intraSystemId;
     }
 
@@ -234,7 +234,7 @@ public class RetrievingContent {
         return target;
     }
 
-    public void setTarget(ArrayList<Info> target) {
+    private void setTarget(ArrayList<Info> target) {
         this.target = target;
     }
 
@@ -242,7 +242,7 @@ public class RetrievingContent {
         return targetContextId;
     }
 
-    public void setTargetContextId(String targetContextId) {
+    private void setTargetContextId(String targetContextId) {
         this.targetContextId = targetContextId;
     }
 }

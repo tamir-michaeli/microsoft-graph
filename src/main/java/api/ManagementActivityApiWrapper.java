@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -34,14 +32,13 @@ public class ManagementActivityApiWrapper {
     private final String publisherId;
     private final String contentType;
     private final int interval;
+    private final String startTime;
+    private String acceptLanguage;
 
     //FIXME the below parameters aren't shared between the other endpoints, how to get the input?
-    private String acceptLanguage;
-    private String webhookAuthId;
-    private String contentId;
     private String organizationId;
-    private String startTime;
-    private String endTime;
+    private String contentId;
+
 
     public ManagementActivityApiWrapper() throws Exception {
         Office365 office365 = configYamil();
@@ -53,6 +50,8 @@ public class ManagementActivityApiWrapper {
         publisherId = office365.getPublisherId();
         contentType = office365.getContentType();
         interval = office365.getInterval();
+        startTime = office365.getStartTime();
+        acceptLanguage = office365.getAcceptLanguage();
 
         sender = new LogzioSender(logzio_token, logzio_host);
         access_token = createConnectionToAzurePortal();
@@ -90,22 +89,12 @@ public class ManagementActivityApiWrapper {
     public void listCurrentSubscriprions() throws Exception {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
         SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, null, publisherId);
-        HttpResponse httpResponse = ManagementActivityApi.listCurrentSubscriprions(subscriptionRequest);
+        ManagementActivityApi.listCurrentSubscriprions(subscriptionRequest);
     }
 
-    public void listAvailableContent() {
+    public void listAvailableContent(Date startTime, Date endTime) {
         String url = "https://manage.office.com/api/v1.0/" + tenant_id + "/activity/feed/";
-
-        Date time1 = null;
-        Date time2 = null;
-        try {
-            time1 = new SimpleDateFormat("dd/MM/yyyy").parse(startTime);
-            time2 = new SimpleDateFormat("dd/MM/yyyy").parse(endTime);
-        } catch (ParseException e) {
-            LOGGER.warning("couldn't parse the time");
-        }
-
-        SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId, time1, time2);
+        SubscriptionRequest subscriptionRequest = new SubscriptionRequest(url, access_token, contentType, publisherId, startTime, endTime);
         ArrayList<AvailableContent> availableContents = null;
         try {
             availableContents = ManagementActivityApi.listAvailableContent(subscriptionRequest);
@@ -115,7 +104,7 @@ public class ManagementActivityApiWrapper {
 
         for (AvailableContent availableContent :
                 availableContents) {
-            String logs = getContentLogs(availableContent);
+            String logs = getContentLogs(availableContent.getContentUri());
             String timeStamp = availableContent.getContentCreated();
 
             String parsedLogs = parseLogs(logs, timeStamp);
@@ -127,9 +116,9 @@ public class ManagementActivityApiWrapper {
         return "{\"@timestamp\":\"" + timeStamp + "\",\n" + "\"body\":\"" + logs + "\"}";
     }
 
-    private String getContentLogs(AvailableContent availableContent) {
+    private String getContentLogs(String path) {
         try {
-            URL url = new URL(availableContent.getContentUri());
+            URL url = new URL(path);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             return conn.getResponseMessage();
@@ -150,23 +139,20 @@ public class ManagementActivityApiWrapper {
         ManagementActivityApi.retrieveResourceFriendlyNames(publisherId, acceptLanguage, access_token, url);
     }
 
-    public void recievingNotifications() throws Exception {
-        String path = "https://webhook.myapp.com/o365/ "; //FIXME this address is the address returned by listSubscription endpoint
-        ManagementActivityApi.receivingNotifications(path, contentType, webhookAuthId);
+    public void recievingNotifications(String url, String webhookAuthId) throws Exception {
+        ManagementActivityApi.receivingNotifications(url, contentType, webhookAuthId);
     }
 
     public void retrievingContent() throws Exception {
-        //FIXME this endpoint doesn't return available content should be fixed
         String path = "https://manage.office.com/api/v1.0/";
-        AvailableContent availableContent = ManagementActivityApi.retrievingContent(path, contentId, access_token, organizationId);
-        String logs = getContentLogs(availableContent);
-        String timeStamp = availableContent.getContentCreated();
-
-        String parsedLogs = parseLogs(logs, timeStamp);
-        sender.send(parsedLogs);
+        ManagementActivityApi.retrievingContent(path, contentId, access_token, organizationId);
     }
 
     public int getInterval() {
         return interval;
+    }
+
+    public String getStartTime() {
+        return startTime;
     }
 }

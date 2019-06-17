@@ -1,5 +1,6 @@
 package api;
 
+import io.logz.sender.com.google.gson.Gson;
 import requests.SubscriptionRequest;
 import responses.AvailableContent;
 import responses.Notification;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 
 public class ManagementActivityApi {
     private static final Logger LOGGER = Logger.getLogger(ManagementActivityApi.class.getName());
+    private static final Gson GSON = new Gson();
 
     public static Subscription startSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType();
@@ -27,7 +29,7 @@ public class ManagementActivityApi {
         conn.setConnectTimeout(15000);
         conn.setDoInput(true);
         conn.setDoOutput(true);
-        Subscription subscription = (Subscription) conn.getContent();
+        Subscription subscription = GSON.fromJson(conn.getResponseMessage(), Subscription.class);
         LOGGER.info("start subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return subscription;
     }
@@ -50,7 +52,7 @@ public class ManagementActivityApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", "1000");
-        ArrayList<Subscription> subscriptions = (ArrayList<Subscription>) conn.getContent();
+        ArrayList<Subscription> subscriptions = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
         LOGGER.info("list Current subscriptions request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return subscriptions;
     }
@@ -63,7 +65,7 @@ public class ManagementActivityApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        ArrayList<AvailableContent> availableContents = (ArrayList<AvailableContent>) conn.getContent();
+        ArrayList<AvailableContent> availableContents = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
         LOGGER.info("list available content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return availableContents;
     }
@@ -74,7 +76,7 @@ public class ManagementActivityApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        RetrievingContent retrievingContent = (RetrievingContent) conn.getContent();
+        RetrievingContent retrievingContent = GSON.fromJson(conn.getResponseMessage(), RetrievingContent.class);
         LOGGER.info("retrieving content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return retrievingContent;
     }
@@ -87,7 +89,7 @@ public class ManagementActivityApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        ArrayList<Notification> notifications = (ArrayList<Notification>) conn.getContent();
+        ArrayList<Notification> notifications = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
         LOGGER.info("list notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return notifications;
     }
@@ -100,7 +102,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Accept-Language", acceptLanguage);
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        ArrayList<ResourceFriendlyNames> names = (ArrayList<ResourceFriendlyNames>) conn.getContent();
+        ArrayList<ResourceFriendlyNames> names = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
         LOGGER.info("retrieve resource friendly names request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return names;
     }
@@ -112,7 +114,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Webhook-AuthID", webhookAuthId);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        ArrayList<Notification> notifications = (ArrayList<Notification>) conn.getContent();
+        ArrayList<Notification> notifications = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
         LOGGER.info("receiving notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return notifications;
     }

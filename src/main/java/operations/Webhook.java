@@ -17,7 +17,7 @@ public class Webhook {
         return authId;
     }
 
-    public void setAuthId(String authId) {
+    private void setAuthId(String authId) {
         this.authId = authId;
     }
 
@@ -25,7 +25,7 @@ public class Webhook {
         return expiration;
     }
 
-    public void setExpiration(String expiration) {
+    private void setExpiration(String expiration) {
         this.expiration = expiration;
     }
 
@@ -33,7 +33,7 @@ public class Webhook {
         return address;
     }
 
-    public void setAddress(String address) {
+    private void setAddress(String address) {
         this.address = address;
     }
 
@@ -41,7 +41,7 @@ public class Webhook {
         return status;
     }
 
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 }

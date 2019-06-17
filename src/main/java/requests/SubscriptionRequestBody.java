@@ -13,7 +13,7 @@ public class SubscriptionRequestBody {
         return webhook;
     }
 
-    public void setWebhook(Webhook webhook) {
+    private void setWebhook(Webhook webhook) {
         this.webhook = webhook;
     }
 }

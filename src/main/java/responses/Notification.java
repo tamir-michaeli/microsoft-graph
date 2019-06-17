@@ -27,7 +27,7 @@ public class Notification {
         return tenantId;
     }
 
-    public void setTenantId(String tenantId) {
+    private void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
@@ -35,7 +35,7 @@ public class Notification {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    private void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -43,7 +43,7 @@ public class Notification {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    private void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
@@ -51,7 +51,7 @@ public class Notification {
         return contentId;
     }
 
-    public void setContentId(String contentId) {
+    private void setContentId(String contentId) {
         this.contentId = contentId;
     }
 
@@ -59,7 +59,7 @@ public class Notification {
         return contentUri;
     }
 
-    public void setContentUri(String contentUri) {
+    private void setContentUri(String contentUri) {
         this.contentUri = contentUri;
     }
 
@@ -67,7 +67,7 @@ public class Notification {
         return contentCreated;
     }
 
-    public void setContentCreated(String contentCreated) {
+    private void setContentCreated(String contentCreated) {
         this.contentCreated = contentCreated;
     }
 
@@ -75,7 +75,7 @@ public class Notification {
         return contentExpiration;
     }
 
-    public void setContentExpiration(String contentExpiration) {
+    private void setContentExpiration(String contentExpiration) {
         this.contentExpiration = contentExpiration;
     }
 
@@ -83,7 +83,7 @@ public class Notification {
         return notificationSent;
     }
 
-    public void setNotificationSent(String notificationSent) {
+    private void setNotificationSent(String notificationSent) {
         this.notificationSent = notificationSent;
     }
 
@@ -91,7 +91,7 @@ public class Notification {
         return notificationStatus;
     }
 
-    public void setNotificationStatus(String notificationStatus) {
+    private void setNotificationStatus(String notificationStatus) {
         this.notificationStatus = notificationStatus;
     }
 }

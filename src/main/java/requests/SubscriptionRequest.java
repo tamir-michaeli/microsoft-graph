@@ -48,7 +48,6 @@ public class SubscriptionRequest {
         return token;
     }
 
-
     public String getPath() {
         return path;
     }

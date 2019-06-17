@@ -17,7 +17,7 @@ public class Subscription {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    private void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
@@ -25,7 +25,7 @@ public class Subscription {
         return status;
     }
 
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 
@@ -33,7 +33,7 @@ public class Subscription {
         return webhook;
     }
 
-    public void setWebhook(Webhook webhook) {
+    private void setWebhook(Webhook webhook) {
         this.webhook = webhook;
     }
 }

@@ -13,7 +13,7 @@ public class Info {
         return id;
     }
 
-    public void setId(String id) {
+    private void setId(String id) {
         this.id = id;
     }
 
@@ -21,7 +21,7 @@ public class Info {
         return type;
     }
 
-    public void setType(int type) {
+    private void setType(int type) {
         this.type = type;
     }
 }

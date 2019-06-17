@@ -19,7 +19,7 @@ public class AvailableContent {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    private void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
@@ -27,7 +27,7 @@ public class AvailableContent {
         return contentId;
     }
 
-    public void setContentId(String contentId) {
+    private void setContentId(String contentId) {
         this.contentId = contentId;
     }
 
@@ -35,7 +35,7 @@ public class AvailableContent {
         return contentUri;
     }
 
-    public void setContentUri(String contentUri) {
+    private void setContentUri(String contentUri) {
         this.contentUri = contentUri;
     }
 
@@ -43,7 +43,7 @@ public class AvailableContent {
         return contentCreated;
     }
 
-    public void setContentCreated(String contentCreated) {
+    private void setContentCreated(String contentCreated) {
         this.contentCreated = contentCreated;
     }
 
@@ -51,7 +51,7 @@ public class AvailableContent {
         return contentExpiration;
     }
 
-    public void setContentExpiration(String contentExpiration) {
+    private void setContentExpiration(String contentExpiration) {
         this.contentExpiration = contentExpiration;
     }
 }

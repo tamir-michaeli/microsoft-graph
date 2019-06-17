@@ -10,42 +10,47 @@ public class Office365 {
     private String contentType; // FIXME should be list of content types
     private Integer interval;
     private String acceptLanguage;
+    private String startTime;
 
 
-    public void setLogzioToken(String logzioToken) {
+    private void setLogzioToken(String logzioToken) {
         this.logzioToken = logzioToken;
     }
 
-    public void setLogzioHost(String logzioHost) {
+    private void setLogzioHost(String logzioHost) {
         this.logzioHost = logzioHost;
     }
 
-    public void setTenantId(String tenantId) {
+    private void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
 
-    public void setClientId(String clientId) {
+    private void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public void setClientSecret(String clientSecret) {
+    private void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
-    public void setPublisherId(String publisherId) {
+    private void setPublisherId(String publisherId) {
         this.publisherId = publisherId;
     }
 
-    public void setContentType(String contentType) {
+    private void setContentType(String contentType) {
         this.contentType = contentType;
     }
 
-    public void setInterval(int interval) {
+    private void setInterval(int interval) {
         this.interval = interval;
     }
 
-    public void setAcceptLanguage(String acceptLanguage) {
+    private void setAcceptLanguage(String acceptLanguage) {
         this.acceptLanguage = acceptLanguage;
+    }
+
+    private void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
     public String getLogzioToken() {
@@ -82,5 +87,9 @@ public class Office365 {
 
     public String getAcceptLanguage() {
         return acceptLanguage;
+    }
+
+    public String getStartTime() {
+        return startTime;
     }
 }
