@@ -1,8 +1,11 @@
 package api;
 
-import org.mockserver.model.HttpResponse;
 import requests.SubscriptionRequest;
 import responses.AvailableContent;
+import responses.Notification;
+import responses.ResourceFriendlyNames;
+import responses.RetrievingContent;
+import responses.Subscription;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -12,7 +15,7 @@ import java.util.logging.Logger;
 public class ManagementActivityApi {
     private static final Logger LOGGER = Logger.getLogger(ManagementActivityApi.class.getName());
 
-    public static HttpResponse startSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
+    public static Subscription startSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType();
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -24,12 +27,12 @@ public class ManagementActivityApi {
         conn.setConnectTimeout(15000);
         conn.setDoInput(true);
         conn.setDoOutput(true);
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("start subscription request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        Subscription subscription = (Subscription) conn.getContent();
+        LOGGER.info("start subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return subscription;
     }
 
-    public static HttpResponse stopSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
+    public static void stopSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/stop?contentType=" + subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -37,21 +40,19 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("stop subscription request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        LOGGER.info("stop subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
     }
 
-    public static HttpResponse listCurrentSubscriprions(SubscriptionRequest subscriptionRequest) throws Exception {
+    public static ArrayList<Subscription> listCurrentSubscriprions(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/list?PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", "1000");
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("list Current subscriptions request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        ArrayList<Subscription> subscriptions = (ArrayList<Subscription>) conn.getContent();
+        LOGGER.info("list Current subscriptions request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return subscriptions;
     }
 
     public static ArrayList<AvailableContent> listAvailableContent(SubscriptionRequest subscriptionRequest) throws Exception {
@@ -67,18 +68,18 @@ public class ManagementActivityApi {
         return availableContents;
     }
 
-    public static AvailableContent retrievingContent(String path, String contentId, String token, String OrganizationId) throws Exception {
+    public static RetrievingContent retrievingContent(String path, String contentId, String token, String OrganizationId) throws Exception {
         URL url = new URL(path + OrganizationId + "/activity/feed/audit/" + contentId);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        AvailableContent availableContent = (AvailableContent) conn.getContent();
-        LOGGER.info("list available content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
-        return availableContent;
+        RetrievingContent retrievingContent = (RetrievingContent) conn.getContent();
+        LOGGER.info("retrieving content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return retrievingContent;
     }
 
-    public static HttpResponse listNotifications(SubscriptionRequest subscriptionRequest) throws Exception {
+    public static ArrayList<Notification> listNotifications(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/notifications?contentType=" +
                 subscriptionRequest.getContentType() + "&PublisherIdentifier=" + subscriptionRequest.getPublisherIdentifier();
         URL url = new URL(path);
@@ -86,12 +87,12 @@ public class ManagementActivityApi {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("list notifications request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        ArrayList<Notification> notifications = (ArrayList<Notification>) conn.getContent();
+        LOGGER.info("list notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return notifications;
     }
 
-    public static HttpResponse retrieveResourceFriendlyNames(String publisherId, String acceptLanguage, String token, String base_path) throws Exception {
+    public static ArrayList<ResourceFriendlyNames> retrieveResourceFriendlyNames(String publisherId, String acceptLanguage, String token, String base_path) throws Exception {
         String path = base_path + "/resources/dlpSensitiveTypes?PublisherIdentifier=" + publisherId;
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -99,20 +100,20 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Accept-Language", acceptLanguage);
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("retrieve resource friendly names request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        ArrayList<ResourceFriendlyNames> names = (ArrayList<ResourceFriendlyNames>) conn.getContent();
+        LOGGER.info("retrieve resource friendly names request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return names;
     }
 
-    public static HttpResponse receivingNotifications(String path, String contentType, String webhookAuthId) throws Exception {
+    public static ArrayList<Notification> receivingNotifications(String path, String contentType, String webhookAuthId) throws Exception {
         URL url = new URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Webhook-AuthID", webhookAuthId);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        HttpResponse httpResponse = HttpResponse.response(conn.getResponseMessage());
-        LOGGER.info("receiving notifications request: response code= " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
-        return httpResponse;
+        ArrayList<Notification> notifications = (ArrayList<Notification>) conn.getContent();
+        LOGGER.info("receiving notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        return notifications;
     }
 }
