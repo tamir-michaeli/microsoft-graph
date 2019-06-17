@@ -1,3 +1,5 @@
+package responses;
+
 public class AvailableContent {
     private String contentType;
     private String contentId;

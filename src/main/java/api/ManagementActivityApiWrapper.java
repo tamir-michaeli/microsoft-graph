@@ -1,7 +1,13 @@
+package api;
+
 import io.logz.sender.com.google.gson.Gson;
 import io.logz.sender.com.google.gson.JsonObject;
+import main.Main;
+import operations.Office365;
 import org.mockserver.model.HttpResponse;
 import org.yaml.snakeyaml.Yaml;
+import requests.SubscriptionRequest;
+import responses.AvailableContent;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +20,8 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 
-public class Office365Apis {
-    private static final Logger LOGGER = Logger.getLogger(Office365Apis.class.getName());
+public class ManagementActivityApiWrapper {
+    private static final Logger LOGGER = Logger.getLogger(ManagementActivityApiWrapper.class.getName());
 
     private final LogzioSender sender;
 
@@ -37,7 +43,7 @@ public class Office365Apis {
     private String startTime;
     private String endTime;
 
-    public Office365Apis() throws Exception {
+    public ManagementActivityApiWrapper() throws Exception {
         Office365 office365 = configYamil();
         logzio_token = office365.getLogzioToken();
         logzio_host = "https://listener.logz.io:8071/";

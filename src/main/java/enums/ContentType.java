@@ -1,3 +1,5 @@
+package enums;
+
 public enum ContentType {
     AZURE_ACTIVE_DIRECTORY("Audit.AzureActiveDirectory"),
     EXCHANGE("Audit.Exchange"),

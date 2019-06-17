@@ -1,3 +1,5 @@
+package requests;
+
 import java.util.Date;
 
 public class SubscriptionRequest {

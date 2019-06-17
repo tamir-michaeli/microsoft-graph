@@ -1,3 +1,5 @@
+package api;
+
 import org.mockserver.model.HttpResponse;
 
 import java.io.BufferedReader;

@@ -1,3 +1,5 @@
+package operations;
+
 public class Office365 {
     private String logzioToken;
     private String logzioHost;

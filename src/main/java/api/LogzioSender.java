@@ -1,8 +1,11 @@
+package api;
+
 import io.logz.sender.HttpsRequestConfiguration;
 import io.logz.sender.SenderStatusReporter;
 import io.logz.sender.com.google.gson.Gson;
 import io.logz.sender.com.google.gson.JsonObject;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
+import operations.StatusReporterFactory;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;

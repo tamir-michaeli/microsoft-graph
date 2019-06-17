@@ -1,4 +1,8 @@
+package api;
+
 import org.mockserver.model.HttpResponse;
+import requests.SubscriptionRequest;
+import responses.AvailableContent;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
