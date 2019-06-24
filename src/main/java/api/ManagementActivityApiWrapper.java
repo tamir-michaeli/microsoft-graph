@@ -3,8 +3,10 @@ package api;
 import io.logz.sender.com.google.gson.Gson;
 import io.logz.sender.com.google.gson.JsonObject;
 import main.Main;
-import operations.Office365;
+import operations.Office365Client;
 import org.mockserver.model.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import requests.SubscriptionRequest;
 import responses.AvailableContent;
@@ -15,11 +17,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Logger;
 
 
 public class ManagementActivityApiWrapper {
-    private static final Logger LOGGER = Logger.getLogger(ManagementActivityApiWrapper.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ManagementActivityApiWrapper.class.getName());
+    public static final String HTTPS_PREFIX = "https://";
+    public static final String PORT_SUFFIX = ":8071/";
 
     private final LogzioSender sender;
 
@@ -41,34 +44,33 @@ public class ManagementActivityApiWrapper {
 
 
     public ManagementActivityApiWrapper() throws Exception {
-        Office365 office365 = configYamil();
-        logzio_token = office365.getLogzioToken();
-        logzio_host = "https://listener.logz.io:8071/";
-        tenant_id = office365.getTenantId();
-        client_id = office365.getClientId();
-        client_secret = office365.getClientSecret();
-        publisherId = office365.getPublisherId();
-        contentType = office365.getContentType();
-        interval = office365.getInterval();
-        startTime = office365.getStartTime();
-        acceptLanguage = office365.getAcceptLanguage();
+        Office365Client officeClient = getConfigYamil();
+        logzio_token = officeClient.getLogzioToken();
+        logzio_host = HTTPS_PREFIX + officeClient.getLogzioListenerHost() + PORT_SUFFIX;
+        tenant_id = officeClient.getTenantId();
+        client_id = officeClient.getClientId();
+        client_secret = officeClient.getClientSecret();
+        publisherId = officeClient.getPublisherId();
+        contentType = officeClient.getContentType();
+        interval = officeClient.getInterval();
+        startTime = officeClient.getStartTime();
+        acceptLanguage = officeClient.getAcceptLanguage();
 
         sender = new LogzioSender(logzio_token, logzio_host);
         access_token = createConnectionToAzurePortal();
     }
 
-    private Office365 configYamil() throws IOException {
+    private Office365Client getConfigYamil() throws IOException {
         Yaml yaml = new Yaml();
         try (InputStream in = Main.class
                 .getResourceAsStream("/conf.yml")) {
-            Office365 office365 = yaml.loadAs(in, Office365.class);
-            return office365;
+           return yaml.loadAs(in, Office365Client.class);
         }
     }
 
     private String createConnectionToAzurePortal() throws Exception {
-        HttpURLConnection httpConnection = Connection.createHttpConnection("https://login.microsoftonline.com/" + tenant_id + "/oauth2/token");
-        HttpResponse httpResponse = Connection.connect(httpConnection, client_id, client_secret);
+        HttpURLConnection httpConnection = Office365HttpConnection.createHttpConnection("https://login.microsoftonline.com/" + tenant_id + "/oauth2/token");
+        HttpResponse httpResponse = Office365HttpConnection.connect(httpConnection, client_id, client_secret);
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(httpResponse.getBody().toString(), JsonObject.class);
         return jsonObject.get("access_token").getAsString();
@@ -99,7 +101,7 @@ public class ManagementActivityApiWrapper {
         try {
             availableContents = ManagementActivityApi.listAvailableContent(subscriptionRequest);
         } catch (Exception e) {
-            LOGGER.warning("failed while getting the list of the available content");
+            logger.error("failed while getting the list of the available content");
         }
 
         for (AvailableContent availableContent :
@@ -123,7 +125,7 @@ public class ManagementActivityApiWrapper {
             conn.setRequestMethod("POST");
             return conn.getResponseMessage();
         } catch (Exception e) {
-            LOGGER.warning("couldn't connect to the uri");
+            logger.error("couldn't connect to the uri");
         }
         return null;
     }

@@ -1,6 +1,8 @@
 package api;
 
 import org.mockserver.model.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -8,11 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Logger;
 
-
-public class Connection {
-    private static final Logger LOGGER = Logger.getLogger(Connection.class.getName());
+public class Office365HttpConnection {
+    private static final Logger logger = LoggerFactory.getLogger(Office365HttpConnection.class.getName());
 
     public static HttpURLConnection createHttpConnection(String url) throws IOException {
         URL myUrl = new URL(url);
@@ -46,7 +46,7 @@ public class Connection {
             con.disconnect();
         }
         HttpResponse httpResponse = HttpResponse.response(responseMessage);
-        LOGGER.info("connect to office 365: response code = " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
+        logger.info("connect to office 365: response code = " + httpResponse.getStatusCode() + " response body= " + httpResponse.getBodyAsString());
         return httpResponse;
     }
 }

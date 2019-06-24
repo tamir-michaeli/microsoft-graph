@@ -6,13 +6,14 @@ import io.logz.sender.com.google.gson.Gson;
 import io.logz.sender.com.google.gson.JsonObject;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
 import operations.StatusReporterFactory;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 public class LogzioSender {
-    private static final Logger LOGGER = Logger.getLogger(LogzioSender.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(LogzioSender.class.getName());
+    public static final String LOGZIO_TYPE = "office365";
+    public static final int DEFAULT_POOL_SIZE = 3;
     private String token;
     private String host;
     private io.logz.sender.LogzioSender logzioSender;
@@ -28,7 +29,7 @@ public class LogzioSender {
         HttpsRequestConfiguration conf = HttpsRequestConfiguration
                 .builder()
                 .setLogzioListenerUrl(host)
-                .setLogzioType("javaSenderType")
+                .setLogzioType(LOGZIO_TYPE)
                 .setLogzioToken(token)
                 .build();
 
@@ -36,7 +37,7 @@ public class LogzioSender {
 
         logzioSender = io.logz.sender.LogzioSender
                 .builder()
-                .setTasksExecutor(Executors.newScheduledThreadPool(3))
+                .setTasksExecutor(Executors.newScheduledThreadPool(DEFAULT_POOL_SIZE))
                 .setHttpsRequestConfiguration(conf)
                 .setReporter(statusReporter)
                 .withInMemoryQueue()
@@ -47,12 +48,12 @@ public class LogzioSender {
     }
 
     public void send(String msg) {
-        LOGGER.info("sending msg to logz.io: \n" + msg);
-        JsonObject jsonMessage = createLogMessage(msg); // create JsonObject to send to logz.io
+        logger.debug("enqueueing msg to sender: \n" + msg);
+        JsonObject jsonMessage = createJSONLogMessage(msg); // create JsonObject to send to logz.io
         logzioSender.send(jsonMessage);
     }
 
-    private JsonObject createLogMessage(String msg) {
+    private JsonObject createJSONLogMessage(String msg) {
         Gson g = new Gson();
         JsonObject object = g.fromJson(msg, io.logz.sender.com.google.gson.JsonObject.class);
         return object;

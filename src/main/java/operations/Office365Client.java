@@ -1,6 +1,6 @@
 package operations;
 
-public class Office365 {
+public class Office365Client {
     private String logzioToken;
     private String logzioHost;
     private String tenantId;
@@ -57,7 +57,7 @@ public class Office365 {
         return logzioToken;
     }
 
-    public String getLogzioHost() {
+    public String getLogzioListenerHost() {
         return logzioHost;
     }
 

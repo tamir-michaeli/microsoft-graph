@@ -1,4 +1,4 @@
-import api.Connection;
+import api.Office365HttpConnection;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -8,11 +8,11 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class ConnectionTest {
+public class Office365HttpConnectionTest {
 
     @Test
     public void createHttpUrlConnectionTest() throws IOException {
-        HttpURLConnection con = Connection.createHttpConnection("http://localhost:8080/");
+        HttpURLConnection con = Office365HttpConnection.createHttpConnection("http://localhost:8080/");
         Assert.assertEquals(con.getRequestMethod(), "POST", "the request method isn't POST");
     }
 
@@ -22,8 +22,8 @@ public class ConnectionTest {
         server.enqueue(new MockResponse().setResponseCode(200));
         server.start(8080);
         String url = "http://localhost:8080/";
-        HttpURLConnection con = Connection.createHttpConnection(url);
-        Connection.connect(con, "0000", "0000");
+        HttpURLConnection con = Office365HttpConnection.createHttpConnection(url);
+        Office365HttpConnection.connect(con, "0000", "0000");
 
         RecordedRequest recordedRequest = server.takeRequest();
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), url);

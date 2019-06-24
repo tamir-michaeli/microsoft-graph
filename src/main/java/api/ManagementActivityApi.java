@@ -1,6 +1,8 @@
 package api;
 
 import io.logz.sender.com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import requests.SubscriptionRequest;
 import responses.AvailableContent;
 import responses.Notification;
@@ -11,10 +13,9 @@ import responses.Subscription;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class ManagementActivityApi {
-    private static final Logger LOGGER = Logger.getLogger(ManagementActivityApi.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ManagementActivityApi.class.getName());
     private static final Gson GSON = new Gson();
 
     public static Subscription startSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
@@ -30,7 +31,7 @@ public class ManagementActivityApi {
         conn.setDoInput(true);
         conn.setDoOutput(true);
         Subscription subscription = GSON.fromJson(conn.getResponseMessage(), Subscription.class);
-        LOGGER.info("start subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("start subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return subscription;
     }
 
@@ -42,7 +43,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
-        LOGGER.info("stop subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("stop subscription request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
     }
 
     public static ArrayList<Subscription> listCurrentSubscriprions(SubscriptionRequest subscriptionRequest) throws Exception {
@@ -53,7 +54,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", "1000");
         ArrayList<Subscription> subscriptions = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
-        LOGGER.info("list Current subscriptions request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("list Current subscriptions request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return subscriptions;
     }
 
@@ -66,7 +67,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
         ArrayList<AvailableContent> availableContents = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
-        LOGGER.info("list available content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("list available content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return availableContents;
     }
 
@@ -77,7 +78,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
         RetrievingContent retrievingContent = GSON.fromJson(conn.getResponseMessage(), RetrievingContent.class);
-        LOGGER.info("retrieving content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("retrieving content request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return retrievingContent;
     }
 
@@ -90,7 +91,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
         ArrayList<Notification> notifications = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
-        LOGGER.info("list notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("list notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return notifications;
     }
 
@@ -103,7 +104,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Authorization", token);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
         ArrayList<ResourceFriendlyNames> names = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
-        LOGGER.info("retrieve resource friendly names request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("retrieve resource friendly names request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return names;
     }
 
@@ -115,7 +116,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Webhook-AuthID", webhookAuthId);
         conn.setRequestProperty("Content-Length", String.valueOf(1000));
         ArrayList<Notification> notifications = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
-        LOGGER.info("receiving notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
+        logger.info("receiving notifications request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return notifications;
     }
 }
