@@ -23,7 +23,7 @@ public class Office365HttpConnectionTest {
         server.start(8080);
         String url = "http://localhost:8080/";
         HttpURLConnection con = Office365HttpConnection.createHttpConnection(url);
-        Office365HttpConnection.connect(con, "0000", "0000");
+        Office365HttpConnection.getAccessToken(con, "0000", "0000");
 
         RecordedRequest recordedRequest = server.takeRequest();
         Assert.assertEquals(recordedRequest.getRequestUrl().toString(), url);

@@ -1,4 +1,5 @@
 import api.ManagementActivityApi;
+import api.Office365HttpRequests;
 import enums.ContentType;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -16,15 +17,25 @@ public class SubscriptionTests {
     private String path = "http://localhost:8080/";
     MockWebServer server = new MockWebServer();
 
-    @BeforeClass
-    public void beforeClass() throws IOException {
-        server.enqueue(new MockResponse().setResponseCode(200));
-        server.start(8080);
-    }
+//    @BeforeClass
+//    public void beforeClass() throws IOException {
+//        server.enqueue(new MockResponse().setResponseCode(200));
+//        server.start(8080);
+//    }
+//
+//    @AfterClass
+//    public void afterClass() throws IOException {
+//        server.shutdown();
+//    }
 
-    @AfterClass
-    public void afterClass() throws IOException {
-        server.shutdown();
+    @Test
+    public void acToken() {
+        Office365HttpRequests client = new Office365HttpRequests(
+                "015fe495-52fc-4a7c-8332-a4db3c331def",
+                "4ecccc8c-8cf5-4718-a14a-cb089f64468a",
+                "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8");
+
+        System.out.println(client.getAccessToken());
     }
 
     @Test
