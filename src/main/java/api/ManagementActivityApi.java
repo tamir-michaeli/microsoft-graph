@@ -20,7 +20,7 @@ public class ManagementActivityApi {
 
     public static Subscription startSubscription(SubscriptionRequest subscriptionRequest) throws Exception {
         String path = subscriptionRequest.getPath() + "/subscriptions/start?contentType=" + subscriptionRequest.getContentType();
-        URL url = new URL(path);
+        URL url = new    URL(path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -54,6 +54,7 @@ public class ManagementActivityApi {
         conn.setRequestProperty("Authorization", subscriptionRequest.getToken());
         conn.setRequestProperty("Content-Length", "1000");
         ArrayList<Subscription> subscriptions = GSON.fromJson(conn.getResponseMessage(), ArrayList.class);
+        logger.info("list Current subscriptions request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         logger.info("list Current subscriptions request: response code= " + conn.getResponseCode() + " response body= " + conn.getResponseMessage());
         return subscriptions;
     }

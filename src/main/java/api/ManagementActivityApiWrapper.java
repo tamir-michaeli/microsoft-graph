@@ -21,8 +21,8 @@ import java.util.Date;
 
 public class ManagementActivityApiWrapper {
     private static final Logger logger = LoggerFactory.getLogger(ManagementActivityApiWrapper.class.getName());
-    public static final String HTTPS_PREFIX = "https://";
-    public static final String PORT_SUFFIX = ":8071/";
+    private static final String HTTPS_PREFIX = "https://";
+    private static final String PORT_SUFFIX = ":8071/";
 
     private final LogzioSender sender;
 
@@ -44,7 +44,7 @@ public class ManagementActivityApiWrapper {
 
 
     public ManagementActivityApiWrapper() throws Exception {
-        Office365Client officeClient = getConfigYamil();
+        Office365Client officeClient = getConfigYaml();
         logzio_token = officeClient.getLogzioToken();
         logzio_host = HTTPS_PREFIX + officeClient.getLogzioListenerHost() + PORT_SUFFIX;
         tenant_id = officeClient.getTenantId();
@@ -57,10 +57,10 @@ public class ManagementActivityApiWrapper {
         acceptLanguage = officeClient.getAcceptLanguage();
 
         sender = new LogzioSender(logzio_token, logzio_host);
-        access_token = createConnectionToAzurePortal();
+        access_token = getMicrosoftAccessToken();
     }
 
-    private Office365Client getConfigYamil() throws IOException {
+    private Office365Client getConfigYaml() throws IOException {
         Yaml yaml = new Yaml();
         try (InputStream in = Main.class
                 .getResourceAsStream("/conf.yml")) {
@@ -68,12 +68,13 @@ public class ManagementActivityApiWrapper {
         }
     }
 
-    private String createConnectionToAzurePortal() throws Exception {
-        HttpURLConnection httpConnection = Office365HttpConnection.createHttpConnection("https://login.microsoftonline.com/" + tenant_id + "/oauth2/token");
-        HttpResponse httpResponse = Office365HttpConnection.connect(httpConnection, client_id, client_secret);
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(httpResponse.getBody().toString(), JsonObject.class);
-        return jsonObject.get("access_token").getAsString();
+    private String getMicrosoftAccessToken() throws Exception {
+//        Office365HttpRequests connection = new Office365HttpRequests(tenant_id);
+//        HttpResponse httpResponse = Office365HttpRequests.getAccessToken(connection, client_id, client_secret);
+//        Gson gson = new Gson();
+//        JsonObject jsonObject = gson.fromJson(httpResponse.getBody().toString(), JsonObject.class);
+//        return jsonObject.get("access_token").getAsString();
+        return null;
     }
 
     public void startSubscription() throws Exception {
@@ -125,7 +126,7 @@ public class ManagementActivityApiWrapper {
             conn.setRequestMethod("POST");
             return conn.getResponseMessage();
         } catch (Exception e) {
-            logger.error("couldn't connect to the uri");
+            logger.error("couldn't getAccessToken to the uri");
         }
         return null;
     }
