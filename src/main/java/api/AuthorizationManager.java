@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 
 public class AuthorizationManager {
 
+    private static final String MICROSOFTONLINE_ADDRESS = "https://login.microsoftonline.com/";
     private static final String RESOURCE = "https://manage.office.com";
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class.getName());
 
@@ -25,7 +26,7 @@ public class AuthorizationManager {
 
 
     public AuthorizationManager(String tenantId, String clientId, String clientSecret) {
-        String authority = Office365HttpRequests.MICROSOFTONLINE_ADDRESS + tenantId;
+        String authority = MICROSOFTONLINE_ADDRESS + tenantId;
         ExecutorService service = Executors.newSingleThreadExecutor();
         logger.debug("creating authorization context");
         try {
