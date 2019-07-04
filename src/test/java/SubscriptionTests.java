@@ -35,7 +35,7 @@ public class SubscriptionTests {
                 "4ecccc8c-8cf5-4718-a14a-cb089f64468a",
                 "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8");
 
-        System.out.println(client.getAccessToken());
+//        System.out.println(client.getAccessToken());
     }
 
     @Test

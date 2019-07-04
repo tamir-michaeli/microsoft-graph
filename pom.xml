@@ -95,7 +95,6 @@
             <groupId>com.squareup.okio</groupId>
             <artifactId>okio</artifactId>
             <version>1.17.4</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

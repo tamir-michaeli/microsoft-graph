@@ -1,16 +1,12 @@
 package responses;
 
-import operations.Webhook;
-
 public class Subscription {
     private String contentType;
-    private String status; //its values enabled/disabled
-    private Webhook webhook;
+    private boolean enabled; //its values enabled/disabled
 
-    public Subscription(String contentType, String status, Webhook webhook) {
+    public Subscription(String contentType, boolean enabled) {
         this.contentType = contentType;
-        this.status = status;
-        this.webhook = webhook;
+        this.enabled = enabled;
     }
 
     public String getContentType() {
@@ -21,19 +17,12 @@ public class Subscription {
         this.contentType = contentType;
     }
 
-    public String getStatus() {
-        return status;
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    private void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Webhook getWebhook() {
-        return webhook;
-    }
-
-    private void setWebhook(Webhook webhook) {
-        this.webhook = webhook;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

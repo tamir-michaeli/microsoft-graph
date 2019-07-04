@@ -12,8 +12,8 @@ import java.util.concurrent.Executors;
 
 public class LogzioSender {
     private static final Logger logger = LoggerFactory.getLogger(LogzioSender.class.getName());
-    public static final String LOGZIO_TYPE = "office365";
-    public static final int DEFAULT_POOL_SIZE = 3;
+    private static final String LOGZIO_TYPE = "office365";
+    private static final int DEFAULT_POOL_SIZE = 3;
     private String token;
     private String host;
     private io.logz.sender.LogzioSender logzioSender;
