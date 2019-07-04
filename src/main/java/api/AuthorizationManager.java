@@ -58,7 +58,7 @@ public class AuthorizationManager {
         try {
             accessToken = future.get().getRefreshToken();
             System.out.println("got refresh token: " + accessToken);
-            currentTokenExpiry = System.currentTimeMillis() + future.get().getExpiresAfter()*1000; // 50 minutes form now (token is valid for 1 hour, 10 minutes safety)
+            currentTokenExpiry = System.currentTimeMillis() + future.get().getExpiresAfter()*1000;
             return true;
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error refreshing access token: ", e.getMessage(), e);
