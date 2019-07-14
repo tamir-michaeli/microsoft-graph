@@ -7,7 +7,6 @@ import okhttp3.Response;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +106,15 @@ public class Office365HttpRequests {
             }
         }
         return subs;
+    }
+
+    public JSONArray sampleRequest(int i, int j) {
+        return new JSONArray();
+    }
+
+    public void getsh() {
+        System.out.println("ken " + auth.getAccessToken());
+
     }
 
     public List<String> listAvailableContent(String contentType, DateTime start, DateTime end) {

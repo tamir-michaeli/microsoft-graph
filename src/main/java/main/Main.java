@@ -4,6 +4,7 @@ import api.ManagementActivityApiWrapper;
 import api.Office365HttpRequests;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,14 +18,21 @@ public class Main {
                 "015fe495-52fc-4a7c-8332-a4db3c331def",
                 "4ecccc8c-8cf5-4718-a14a-cb089f64468a",
                 "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8");
-        int interval = 30*60*1000;
+        int interval = 10*60*1000;
+
+        ArrayList<JsonArrayRequest> jsr = new ArrayList<>();
+        jsr.add(client::sampleRequest);
+//        FetchSendManager man = new FetchSendManager()
 
         Runnable runnable = () -> {
-            client.listSubscriptions();
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                //FIXME add solution here
+            while (true) {
+                try {
+                    Thread.sleep(interval);
+//                client.listSubscriptions();
+                    client.getsh();
+                } catch (InterruptedException e) {
+                    //FIXME add solution here
+                }
             }
         };
         Thread thread = new Thread(runnable);

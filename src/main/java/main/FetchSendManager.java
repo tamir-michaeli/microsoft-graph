@@ -1,11 +1,9 @@
 package main;
 
-import api.Office365HttpRequests;
 import io.logz.sender.HttpsRequestConfiguration;
 import io.logz.sender.LogzioSender;
 import io.logz.sender.SenderStatusReporter;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
-import operations.Office365Client;
 import operations.StatusReporterFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,9 +15,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class FetchManager {
+public class FetchSendManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(FetchManager.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(FetchSendManager.class.getName());
 
     private ScheduledExecutorService taskScheduler;
     private JsonArrayRequest[] dataRequests;
@@ -29,7 +27,7 @@ public class FetchManager {
     private int lastFetch;
     private int interval;
 
-    public FetchManager(JsonArrayRequest[] dataRequests, LogzioJavaSenderParams senderParams) {
+    public FetchSendManager(JsonArrayRequest[] dataRequests, LogzioJavaSenderParams senderParams) {
         this.taskScheduler = Executors.newSingleThreadScheduledExecutor();
         this.logzioSenderParams = senderParams;
         this.dataRequests = dataRequests;
@@ -46,13 +44,14 @@ public class FetchManager {
             for (int i = 0; i < result.length(); i++) {
                 try {
                     byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(result.getJSONObject(i).toString()).array();
-//                    logzioSender.send(jsonAsBytes);
+                    sender.send(jsonAsBytes);
                 } catch (JSONException e) {
                     //todo err
                 }
 
             }
         }
+        lastFetch += interval;
     }
 
     private LogzioSender getLogzioSender() {

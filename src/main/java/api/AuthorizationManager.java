@@ -36,10 +36,10 @@ public class AuthorizationManager {
 
 
     public AuthorizationManager(String tenantId, String clientId, String clientSecret) {
+        //todo init message
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.tenantId = tenantId;
-
         retrieveToken();
     }
 
