@@ -21,12 +21,12 @@ public class AuthorizationManager {
     private static final String MICROSOFTONLINE_ADDRESS = "https://login.microsoftonline.com/";
     private static final String SCOPE = "https://graph.microsoft.com/.default";
     private static final String OAUTH2_TOKEN_API = "/oauth2/v2.0/token";
-    public static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
-    public static final String REQUEST_CONTENT_TYPE = "Content-Type";
-    public static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
-    public static final String REQUEST_CONTENT_LENGTH = "Content-Length";
-    public static final String JSON_ACCESS_TOKEN = "access_token";
-    public static final String JSON_ACCESS_TOKEN_EXPIRE_DURATION = "expires_in";
+    private static final String CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
+    private static final String REQUEST_CONTENT_TYPE = "Content-Type";
+    private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
+    private static final String REQUEST_CONTENT_LENGTH = "Content-Length";
+    private static final String JSON_ACCESS_TOKEN = "access_token";
+    private static final String JSON_ACCESS_TOKEN_EXPIRE_DURATION = "expires_in";
 
     private final String clientId;
     private final String clientSecret;
