@@ -18,33 +18,30 @@ public class MSClient {
 
     public void start() {
         MSGraphConfiguration configuration = loadMSGraphConfig(configFile);
-        MSGraphHttpRequests client = new MSGraphHttpRequests(
-                "c96a62e5-1e49-4187-b394-08b694e8bb0d",
-                "c514bf88-cd22-4196-a955-185e663d59a4",
-                "D+z+3cVlL+:bgxhXa02F799QujC0-YhI");
+        MSGraphHttpRequests client = new MSGraphHttpRequests(configuration.getAzureADClient());
         int interval = 10*60*1000;
 
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(client::getSignIns);
-//        FetchSendManager man = new FetchSendManager((JsonArrayRequest[]) requests.toArray(), configuration.getLogzioSenderParameters());
+        FetchSendManager manager = new FetchSendManager(requests , configuration.getLogzioSenderParameters());
+        manager.start();
 
-
-        Runnable runnable = () -> {
-            while (true) {
-                try {
-                    for (JsonArrayRequest request : requests) {
-                        System.out.println(request.getData(0,0));
-                    }
-                    Thread.sleep(interval);
-
-//                client.listSubscriptions();
-                } catch (InterruptedException e) {
-                    //FIXME add solution here
-                }
-            }
-        };
-        Thread thread = new Thread(runnable);
-        thread.start();
+//        Runnable runnable = () -> {
+//            while (true) {
+//                try {
+//                    for (JsonArrayRequest request : requests) {
+//                        System.out.println(request.getData(0,0));
+//                    }
+//                    Thread.sleep(interval);
+//
+////                client.listSubscriptions();
+//                } catch (InterruptedException e) {
+//                    //FIXME add solution here
+//                }
+//            }
+//        };
+//        Thread thread = new Thread(runnable);
+//        thread.start();
     }
 
     private MSGraphConfiguration loadMSGraphConfig(String yamlFile) {

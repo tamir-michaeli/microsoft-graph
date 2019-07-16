@@ -25,12 +25,12 @@ public class StatusReporterFactory {
 
             @Override
             public void info(String s) {
-                logger.debug("AzureADClient" + s);
+                logger.info("AzureADClient" + s);
             }
 
             @Override
             public void info(String s, Throwable throwable) {
-                logger.debug("AzureADClient" + s + " " + throwable.getMessage());
+                logger.info("AzureADClient" + s + " " + throwable.getMessage());
             }
         };
     }

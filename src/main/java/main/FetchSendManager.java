@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -20,14 +21,14 @@ public class FetchSendManager {
     private static final Logger logger = LoggerFactory.getLogger(FetchSendManager.class.getName());
 
     private ScheduledExecutorService taskScheduler;
-    private JsonArrayRequest[] dataRequests;
+    private ArrayList<JsonArrayRequest> dataRequests;
     private LogzioJavaSenderParams logzioSenderParams;
     private ScheduledExecutorService senderExecutors;
     private LogzioSender sender;
     private int lastFetch;
     private int interval;
 
-    public FetchSendManager(JsonArrayRequest[] dataRequests, LogzioJavaSenderParams senderParams) {
+    public FetchSendManager(ArrayList<JsonArrayRequest> dataRequests, LogzioJavaSenderParams senderParams) {
         this.taskScheduler = Executors.newSingleThreadScheduledExecutor();
         this.logzioSenderParams = senderParams;
         this.dataRequests = dataRequests;
@@ -36,9 +37,10 @@ public class FetchSendManager {
 
     public void start() {
         taskScheduler.scheduleAtFixedRate(this::pullAndSendData,0,60, TimeUnit.SECONDS);
+        sender.start();
     }
 
-    public void pullAndSendData() {
+    private void pullAndSendData() {
         for (JsonArrayRequest request : dataRequests) {
             JSONArray result = request.getData(lastFetch, lastFetch + interval);
             for (int i = 0; i < result.length(); i++) {

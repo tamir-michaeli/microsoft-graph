@@ -1,17 +1,17 @@
 package api;
 
+import okio.Utf8;
+import operations.AzureADClient;
 import org.apache.http.HttpException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class AuthorizationManager {
@@ -35,11 +35,11 @@ public class AuthorizationManager {
     private long currentTokenExpiry = 0;
 
 
-    public AuthorizationManager(String tenantId, String clientId, String clientSecret) {
+    public AuthorizationManager(AzureADClient client){
         //todo init message
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.tenantId = tenantId;
+        this.clientId = client.getClientId();
+        this.clientSecret = client.getClientSecret();
+        this.tenantId = client.getTenantId();
         retrieveToken();
     }
 
@@ -60,7 +60,7 @@ public class AuthorizationManager {
             String urlParameters  = "grant_type=" + CLIENT_CREDENTIALS_GRANT_TYPE
                     + "&client_id=" + clientId
                     + "&scope=" + SCOPE
-                    + "&client_secret=" + clientSecret;
+                    + "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8.toString());
             byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
@@ -70,6 +70,12 @@ public class AuthorizationManager {
             con.setDoOutput(true);
             con.setRequestProperty(REQUEST_CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
             con.setRequestProperty(REQUEST_CONTENT_LENGTH, Integer.toString(postDataLength));
+            con.setRequestProperty("Accept", "*/*");
+            con.setRequestProperty("accept-encoding", "gzip, deflate");
+            con.setRequestProperty("User-Agent", "Java client");
+            con.setRequestProperty("Cache-Control", "no-cache");
+            con.setRequestProperty("Host", "login.microsoftonline.com");
+
 
             try( DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write( postData );

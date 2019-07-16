@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import operations.AzureADClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,14 +19,11 @@ public class MSGraphHttpRequests {
     private static final String API_ULR = "https://graph.microsoft.com/v1.0/";
 //    private static final String FEED_SUBSCRIPTIONS = "/activity/feed/subscriptions/";
 
-    private String tenantId;
     private AuthorizationManager auth;
 
-    public MSGraphHttpRequests(String tenantId, String clientId, String clientSecret) {
-
-        auth = new AuthorizationManager(tenantId, clientId, clientSecret);
+    public MSGraphHttpRequests(AzureADClient client) {
         logger.debug("requesting access token...");
-        this.tenantId = tenantId;
+        auth = new AuthorizationManager(client);
     }
 
     private Response executeOperationApi(String operation, boolean isGet) {
@@ -62,10 +60,8 @@ public class MSGraphHttpRequests {
             JSONObject resultJson = new JSONObject(responseBody);
             return resultJson.getJSONArray("value");
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (IOException | JSONException e) {
+            logger.error("error parsing response: {}" , e.getMessage(), e);
         }
         return null;
     }
