@@ -1,16 +1,11 @@
+import api.MSGraphHttpRequests;
 import api.ManagementActivityApi;
-import api.Office365HttpRequests;
 import enums.ContentType;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import requests.SubscriptionRequest;
-
-import java.io.IOException;
 
 public class SubscriptionTests {
     private SubscriptionRequest subscriptionRequest;
@@ -30,7 +25,7 @@ public class SubscriptionTests {
 
     @Test
     public void acToken() {
-        Office365HttpRequests client = new Office365HttpRequests(
+        MSGraphHttpRequests client = new MSGraphHttpRequests(
                 "015fe495-52fc-4a7c-8332-a4db3c331def",
                 "4ecccc8c-8cf5-4718-a14a-cb089f64468a",
                 "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8");

@@ -5,5 +5,4 @@ azureADClient:
   clientSecret: "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8"
 
 logzioSenderParameters:
-  listenerUrl: "listener.logz.io"
   accountToken: "oCwtQDtWjDOMcHXHGGNrnRgkEMxCDuiO"

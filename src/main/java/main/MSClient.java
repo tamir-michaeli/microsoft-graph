@@ -1,6 +1,6 @@
 package main;
 
-import api.Office365HttpRequests;
+import api.MSGraphHttpRequests;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -18,22 +18,26 @@ public class MSClient {
 
     public void start() {
         MSGraphConfiguration configuration = loadMSGraphConfig(configFile);
-        Office365HttpRequests client = new Office365HttpRequests(
-                "015fe495-52fc-4a7c-8332-a4db3c331def",
-                "4ecccc8c-8cf5-4718-a14a-cb089f64468a",
-                "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8");
+        MSGraphHttpRequests client = new MSGraphHttpRequests(
+                "c96a62e5-1e49-4187-b394-08b694e8bb0d",
+                "c514bf88-cd22-4196-a955-185e663d59a4",
+                "D+z+3cVlL+:bgxhXa02F799QujC0-YhI");
         int interval = 10*60*1000;
 
-        ArrayList<JsonArrayRequest> jsr = new ArrayList<>();
-        jsr.add(client::sampleRequest);
-//        FetchSendManager man = new FetchSendManager()
+        ArrayList<JsonArrayRequest> requests = new ArrayList<>();
+        requests.add(client::getSignIns);
+//        FetchSendManager man = new FetchSendManager((JsonArrayRequest[]) requests.toArray(), configuration.getLogzioSenderParameters());
+
 
         Runnable runnable = () -> {
             while (true) {
                 try {
+                    for (JsonArrayRequest request : requests) {
+                        System.out.println(request.getData(0,0));
+                    }
                     Thread.sleep(interval);
+
 //                client.listSubscriptions();
-                    client.getsh();
                 } catch (InterruptedException e) {
                     //FIXME add solution here
                 }

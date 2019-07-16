@@ -54,8 +54,8 @@
 //    }
 //
 //    private String getMicrosoftAccessToken() throws Exception {
-////        Office365HttpRequests connection = new Office365HttpRequests(tenant_id);
-////        HttpResponse httpResponse = Office365HttpRequests.getAccessToken(connection, client_id, client_secret);
+////        MSGraphHttpRequests connection = new MSGraphHttpRequests(tenant_id);
+////        HttpResponse httpResponse = MSGraphHttpRequests.getAccessToken(connection, client_id, client_secret);
 ////        Gson gson = new Gson();
 ////        JsonObject jsonObject = gson.fromJson(httpResponse.getBody().toString(), JsonObject.class);
 ////        return jsonObject.get("access_token").getAsString();
