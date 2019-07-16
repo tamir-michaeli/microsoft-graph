@@ -13,6 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class MSGraphHttpRequests {
     private static final Logger logger = LoggerFactory.getLogger(MSGraphHttpRequests.class.getName());
@@ -22,44 +26,61 @@ public class MSGraphHttpRequests {
     private AuthorizationManager auth;
 
     public MSGraphHttpRequests(AzureADClient client) {
-        logger.debug("requesting access token...");
         auth = new AuthorizationManager(client);
     }
 
-    private Response executeOperationApi(String operation, boolean isGet) {
+    private Response executeOperationApi(String operation, boolean isGet) throws IOException {
         return executeOperationApi(operation, isGet,"");
     }
 
-
-    private Response executeOperationApi(String operation, boolean isGet, String extras) {
-        OkHttpClient client = new OkHttpClient();
+    private Response executeOperationApi(String operation, boolean isGet, String extras) throws IOException {
         String url = API_ULR + operation + extras;
+        return executeRequest(url);
+    }
+
+    private Response executeRequest(String url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         auth.getAccessToken();
         RequestBody body = RequestBody.create(null, new byte[0]); //empty body
         Request.Builder requestBuilder = new Request.Builder()
-            .addHeader("Authorization", "Bearer " + auth.getAccessToken())
-            .addHeader("Content-Type","application/json");
-        if (isGet) {
+                .addHeader("Authorization", "Bearer " + auth.getAccessToken())
+                .addHeader("Content-Type","application/json");
+//        if (isGet) {
             requestBuilder = requestBuilder.get();
-        } else {
-            requestBuilder = requestBuilder.post(body);
-        }
+//        } else {
+//            requestBuilder = requestBuilder.post(body);
+//        }
         Request request = requestBuilder.url(url).build();
-        try {
-            return client.newCall(request).execute();
-        } catch (IOException e) {
-            logger.error("error calling api operation {}: {}", operation, e.getMessage(), e);
+        return client.newCall(request).execute();
+
+    }
+
+    private JSONArray getAllPages(String url) throws IOException, JSONException {
+        Response response =  executeRequest(url);
+        String responseBody = response.body().string();
+        JSONObject resultJson = new JSONObject(responseBody);
+
+        JSONArray thisPage = resultJson.getJSONArray("value");
+        System.out.println(thisPage.length() + " RECORDS IN THIS PAGE");
+        if (resultJson.has("@odata.nextLink")) {
+            System.out.println("FOUND NEXT PAGE = " + resultJson.getString("@odata.nextLink"));
+            JSONArray nextPages = getAllPages(resultJson.getString("@odata.nextLink"));
+            for (int i = 0; i < thisPage.length(); i++) {
+                nextPages.put(thisPage.get(i));
+            }
+            return nextPages;
         }
-        return null;
+        return thisPage;
     }
 
     public JSONArray getSignIns(int from, int to) {
-       Response response =  executeOperationApi("auditLogs/signIns",true, "");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date fromDate = new Date();
+        fromDate.setTime(fromDate.getTime()-6*60*60*1000);
+        Date toDate = new Date();
         try {
-            String responseBody = response.body().string();
-            JSONObject resultJson = new JSONObject(responseBody);
-            return resultJson.getJSONArray("value");
-
+            return getAllPages(API_ULR + "auditLogs/signIns");
         } catch (IOException | JSONException e) {
             logger.error("error parsing response: {}" , e.getMessage(), e);
         }
