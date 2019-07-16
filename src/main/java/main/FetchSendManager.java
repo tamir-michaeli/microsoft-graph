@@ -46,7 +46,7 @@ public class FetchSendManager {
                     byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(result.getJSONObject(i).toString()).array();
                     sender.send(jsonAsBytes);
                 } catch (JSONException e) {
-                    //todo err
+                    logger.error("error parsing response: {}", e.getMessage(), e);
                 }
 
             }
@@ -60,9 +60,9 @@ public class FetchSendManager {
         try {
             HttpsRequestConfiguration requestConf = HttpsRequestConfiguration
                     .builder()
-                    .setLogzioListenerUrl(logzioSenderParams.getUrl())
+                    .setLogzioListenerUrl(logzioSenderParams.getListenerUrl())
                     .setLogzioType(logzioSenderParams.getType())
-                    .setLogzioToken(logzioSenderParams.getToken())
+                    .setLogzioToken(logzioSenderParams.getAccountToken())
                     .setCompressRequests(logzioSenderParams.isCompressRequests())
                     .build();
 

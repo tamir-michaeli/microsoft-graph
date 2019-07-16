@@ -8,29 +8,29 @@ public class StatusReporterFactory {
         return new SenderStatusReporter() {
 
             public void error(String s) {
-                logger.error("Office365Client" + s);
+                logger.error("AzureADClient" + s);
             }
 
             public void error(String s, Throwable throwable) {
-                logger.error("Office365Client" + s + " " + throwable.getMessage());
+                logger.error("AzureADClient" + s + " " + throwable.getMessage());
             }
 
             public void warning(String s) {
-                logger.warn("Office365Client" + s);
+                logger.warn("AzureADClient" + s);
             }
 
             public void warning(String s, Throwable throwable) {
-                logger.warn("Office365Client" + s + " " + throwable.getMessage());
+                logger.warn("AzureADClient" + s + " " + throwable.getMessage());
             }
 
             @Override
             public void info(String s) {
-                logger.debug("Office365Client" + s);
+                logger.debug("AzureADClient" + s);
             }
 
             @Override
             public void info(String s, Throwable throwable) {
-                logger.debug("Office365Client" + s + " " + throwable.getMessage());
+                logger.debug("AzureADClient" + s + " " + throwable.getMessage());
             }
         };
     }

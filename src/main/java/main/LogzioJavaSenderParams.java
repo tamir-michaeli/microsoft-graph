@@ -5,9 +5,11 @@ import java.io.File;
 public class LogzioJavaSenderParams {
 
 
-    private String url = "https://listener.logz.io:8071";
-    private String type = "jmx2LogzioType";
-    private String Token;
+    private static String HTTPS_PREFIX = "https://";
+    private static String PORT_SUFFIX = ":8071";
+    private String listenerUrl = HTTPS_PREFIX + "listener.logz.io" + PORT_SUFFIX;
+    private String type = "Microsoft-Graph";
+    private String accountToken;
     private int threadPoolSize = 3;
     private boolean debug = true;
     private boolean compressRequests = true;
@@ -29,16 +31,16 @@ public class LogzioJavaSenderParams {
     public LogzioJavaSenderParams() {
         String queuePath = System.getProperty("user.dir");
         queuePath += queuePath.endsWith("/") ? "" : "/";
-        queuePath += "metrics";
+        queuePath += "MSGraph";
         this.queueDir = new File(queuePath);
     }
 
-    public String getUrl() {
-        return url;
+    public String getListenerUrl() {
+        return listenerUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setListenerUrl(String listenerUrl) {
+        this.listenerUrl = HTTPS_PREFIX + listenerUrl + PORT_SUFFIX;
     }
 
     public String getType() {
@@ -46,12 +48,12 @@ public class LogzioJavaSenderParams {
     }
 
 
-    public String getToken() {
-        return Token;
+    public String getAccountToken() {
+        return accountToken;
     }
 
-    public void setToken(String token) {
-        Token = token;
+    public void setAccountToken(String accountToken) {
+        this.accountToken = accountToken;
     }
 
     public int getThreadPoolSize() {
