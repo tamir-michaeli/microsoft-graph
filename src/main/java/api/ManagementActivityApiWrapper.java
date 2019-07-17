@@ -54,8 +54,8 @@
 //    }
 //
 //    private String getMicrosoftAccessToken() throws Exception {
-////        MSGraphHttpRequests connection = new MSGraphHttpRequests(tenant_id);
-////        HttpResponse httpResponse = MSGraphHttpRequests.getAccessToken(connection, client_id, client_secret);
+////        MSGraphRequestExecutor connection = new MSGraphRequestExecutor(tenant_id);
+////        HttpResponse httpResponse = MSGraphRequestExecutor.getAccessToken(connection, client_id, client_secret);
 ////        Gson gson = new Gson();
 ////        JsonObject jsonObject = gson.fromJson(httpResponse.getBody().toString(), JsonObject.class);
 ////        return jsonObject.get("access_token").getAsString();

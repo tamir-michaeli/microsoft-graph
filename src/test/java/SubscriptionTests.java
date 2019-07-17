@@ -1,4 +1,3 @@
-import api.MSGraphHttpRequests;
 import api.ManagementActivityApi;
 import enums.ContentType;
 import okhttp3.mockwebserver.MockWebServer;
@@ -25,7 +24,7 @@ public class SubscriptionTests {
 
     @Test
     public void acToken() {
-//        MSGraphHttpRequests client = new MSGraphHttpRequests(
+//        MSGraphRequestExecutor client = new MSGraphRequestExecutor(
 //                "015fe495-52fc-4a7c-8332-a4db3c331def",
 //                "4ecccc8c-8cf5-4718-a14a-cb089f64468a",
 //                "LYaMDS56oTe=DNpIHuhFl*4deF:*GzP8");

@@ -18,15 +18,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class MSGraphHttpRequests {
-    private static final Logger logger = LoggerFactory.getLogger(MSGraphHttpRequests.class.getName());
-    private static final String API_ULR = "https://graph.microsoft.com/v1.0/";
+public class MSGraphRequestExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(MSGraphRequestExecutor.class.getName());
+    public static final String API_ULR = "https://graph.microsoft.com/v1.0/";
 //    private static final String FEED_SUBSCRIPTIONS = "/activity/feed/subscriptions/";
 
     private AuthorizationManager auth;
+    private int interval; // in millis
 
-    public MSGraphHttpRequests(AzureADClient client) {
+    public MSGraphRequestExecutor(AzureADClient client) {
         auth = new AuthorizationManager(client);
+        this.interval = client.getPullInterval()*1000;
     }
 
     private Response executeOperationApi(String operation, boolean isGet) throws IOException {
@@ -55,7 +57,8 @@ public class MSGraphHttpRequests {
 
     }
 
-    private JSONArray getAllPages(String url) throws IOException, JSONException {
+     public JSONArray getAllPages(String url) throws IOException, JSONException {
+         System.out.println("URL: " + url);
         Response response =  executeRequest(url);
         String responseBody = response.body().string();
         JSONObject resultJson = new JSONObject(responseBody);
@@ -73,19 +76,14 @@ public class MSGraphHttpRequests {
         return thisPage;
     }
 
-    public JSONArray getSignIns(int from, int to) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+    public String timeFilterSuffix(String timeField) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date fromDate = new Date();
-        fromDate.setTime(fromDate.getTime()-6*60*60*1000);
-        Date toDate = new Date();
-        try {
-            return getAllPages(API_ULR + "auditLogs/signIns");
-        } catch (IOException | JSONException e) {
-            logger.error("error parsing response: {}" , e.getMessage(), e);
-        }
-        return null;
+        fromDate.setTime(fromDate.getTime()-interval);
+        return "?$filter="+ timeField + " ge " + df.format(fromDate);
     }
+
 
 //    public JSONArray sampleRequest(int i, int j) {
 //        return new JSONArray();

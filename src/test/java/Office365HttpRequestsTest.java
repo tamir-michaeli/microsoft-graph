@@ -2,7 +2,7 @@ public class Office365HttpRequestsTest {
 
 //    @Test
 //    public void createHttpUrlConnectionTest() throws IOException {
-//        HttpURLConnection con = MSGraphHttpRequests.createHttpConnection("http://localhost:8080/");
+//        HttpURLConnection con = MSGraphRequestExecutor.createHttpConnection("http://localhost:8080/");
 //        Assert.assertEquals(con.getRequestMethod(), "POST", "the request method isn't POST");
 //    }
 //
@@ -12,8 +12,8 @@ public class Office365HttpRequestsTest {
 //        server.enqueue(new MockResponse().setResponseCode(200));
 //        server.start(8080);
 //        String url = "http://localhost:8080/";
-//        HttpURLConnection con = MSGraphHttpRequests.createHttpConnection(url);
-//        MSGraphHttpRequests.getAccessToken(con, "0000", "0000");
+//        HttpURLConnection con = MSGraphRequestExecutor.createHttpConnection(url);
+//        MSGraphRequestExecutor.getAccessToken(con, "0000", "0000");
 //
 //        RecordedRequest recordedRequest = server.takeRequest();
 //        Assert.assertEquals(recordedRequest.getRequestUrl().toString(), url);

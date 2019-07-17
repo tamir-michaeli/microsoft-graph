@@ -25,24 +25,24 @@ public class FetchSendManager {
     private LogzioJavaSenderParams logzioSenderParams;
     private ScheduledExecutorService senderExecutors;
     private LogzioSender sender;
-    private int lastFetch;
     private int interval;
 
-    public FetchSendManager(ArrayList<JsonArrayRequest> dataRequests, LogzioJavaSenderParams senderParams) {
+    public FetchSendManager(ArrayList<JsonArrayRequest> dataRequests, LogzioJavaSenderParams senderParams, int interval) {
         this.taskScheduler = Executors.newSingleThreadScheduledExecutor();
         this.logzioSenderParams = senderParams;
         this.dataRequests = dataRequests;
         this.sender = getLogzioSender();
+        this.interval = interval;
     }
 
     public void start() {
-        taskScheduler.scheduleAtFixedRate(this::pullAndSendData,0,60, TimeUnit.SECONDS);
+        taskScheduler.scheduleAtFixedRate(this::pullAndSendData,0,interval , TimeUnit.SECONDS);
         sender.start();
     }
 
     private void pullAndSendData() {
         for (JsonArrayRequest request : dataRequests) {
-            JSONArray result = request.getData(lastFetch, lastFetch + interval);
+            JSONArray result = request.getData();
             for (int i = 0; i < result.length(); i++) {
                 try {
                     byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(result.getJSONObject(i).toString()).array();
@@ -53,7 +53,6 @@ public class FetchSendManager {
 
             }
         }
-        lastFetch += interval;
     }
 
     private LogzioSender getLogzioSender() {

@@ -1,6 +1,7 @@
 package main;
 
-import api.MSGraphHttpRequests;
+import api.MSGraphRequestExecutor;
+import api.Office365Apis;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -13,17 +14,19 @@ public class MSClient {
 
     public MSClient(String configFile) {
         this.configFile = configFile;
-        start();
     }
 
     public void start() {
+
         MSGraphConfiguration configuration = loadMSGraphConfig(configFile);
-        MSGraphHttpRequests client = new MSGraphHttpRequests(configuration.getAzureADClient());
-        int interval = 10*60*1000;
+        MSGraphRequestExecutor client = new MSGraphRequestExecutor(configuration.getAzureADClient());
+        Office365Apis officeApis = new Office365Apis(client);
+
+
 
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
-        requests.add(client::getSignIns);
-        FetchSendManager manager = new FetchSendManager(requests , configuration.getLogzioSenderParameters());
+        requests.add(officeApis::getSignIns);
+        FetchSendManager manager = new FetchSendManager(requests , configuration.getLogzioSenderParameters(), configuration.getAzureADClient().getPullInterval());
         manager.start();
 
 //        Runnable runnable = () -> {
