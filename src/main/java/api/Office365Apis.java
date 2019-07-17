@@ -26,4 +26,13 @@ public class Office365Apis {
         }
         return null;
     }
+
+    public JSONArray getDirectoryaudits() {
+        try {
+            return requestExecutor.getAllPages(API_ULR + "auditLogs/directoryaudits" + requestExecutor.timeFilterSuffix("activityDateTime"));
+        } catch (IOException | JSONException e) {
+            logger.error("error parsing response: {}" , e.getMessage(), e);
+        }
+        return null;
+    }
 }
