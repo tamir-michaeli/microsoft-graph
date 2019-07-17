@@ -26,7 +26,7 @@ public class MSClient {
 
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(officeApis::getSignIns);
-        requests.add(officeApis::getDirectoryaudits);
+        requests.add(officeApis::getDirectoryAudits);
         FetchSendManager manager = new FetchSendManager(requests , configuration.getLogzioSenderParameters(), configuration.getAzureADClient().getPullInterval());
         manager.start();
 

@@ -48,9 +48,8 @@ public class FetchSendManager {
                     byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(result.getJSONObject(i).toString()).array();
                     sender.send(jsonAsBytes);
                 } catch (JSONException e) {
-                    logger.error("error parsing response: {}", e.getMessage(), e);
+                    logger.error("error extracting json object from response: {}", e.getMessage(), e);
                 }
-
             }
         }
     }

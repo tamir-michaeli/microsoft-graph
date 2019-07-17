@@ -22,17 +22,17 @@ public class Office365Apis {
         try {
             return requestExecutor.getAllPages(API_ULR + "auditLogs/signIns" + requestExecutor.timeFilterSuffix("createdDateTime"));
         } catch (IOException | JSONException e) {
-            logger.error("error parsing response: {}" , e.getMessage(), e);
+            logger.error("error parsing response: {}", e.getMessage(), e);
         }
-        return null;
+        return new JSONArray();
     }
 
-    public JSONArray getDirectoryaudits() {
+    public JSONArray getDirectoryAudits() {
         try {
             return requestExecutor.getAllPages(API_ULR + "auditLogs/directoryaudits" + requestExecutor.timeFilterSuffix("activityDateTime"));
         } catch (IOException | JSONException e) {
-            logger.error("error parsing response: {}" , e.getMessage(), e);
+            logger.error("error parsing response: {}", e.getMessage(), e);
         }
-        return null;
+        return new JSONArray();
     }
 }
