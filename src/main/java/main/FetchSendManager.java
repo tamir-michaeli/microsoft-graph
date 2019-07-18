@@ -6,7 +6,9 @@ import io.logz.sender.SenderStatusReporter;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
 import objects.JsonArrayRequest;
 import objects.LogzioJavaSenderParams;
-import objects.StatusReporterFactory;
+import utils.HangupInterceptor;
+import utils.Shutdownable;
+import utils.StatusReporterFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -18,7 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class FetchSendManager {
+public class FetchSendManager implements Shutdownable {
 
     private static final Logger logger = LoggerFactory.getLogger(FetchSendManager.class.getName());
     private static final int NO_DELAY = 0;
@@ -41,6 +43,7 @@ public class FetchSendManager {
 
     public void start() {
         logger.info("starting fetch-send scheduled operation");
+        enableHangupSupport();
         taskScheduler.scheduleAtFixedRate(this::pullAndSendData, NO_DELAY, interval, TimeUnit.SECONDS);
         sender.start();
     }
@@ -100,4 +103,30 @@ public class FetchSendManager {
         return null;
     }
 
+    private void enableHangupSupport() {
+        HangupInterceptor interceptor = new HangupInterceptor(this);
+        Runtime.getRuntime().addShutdownHook(interceptor);
+    }
+
+    @Override
+    public void shutdown() {
+        logger.info("requesting data fetcher to stop");
+        try {
+            taskScheduler.shutdown();
+            if (!taskScheduler.awaitTermination(20, TimeUnit.SECONDS)) {
+                taskScheduler.shutdownNow();
+            }
+            logger.info("stopping data sender");
+            sender.stop();
+            senderExecutors.shutdown();
+            if (!senderExecutors.awaitTermination(20, TimeUnit.SECONDS)) {
+                senderExecutors.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            logger.warn("final request was interrupted: " + e.getMessage(), e);
+        } catch (SecurityException ex) {
+            logger.error("can't submit final request: " + ex.getMessage(), ex);
+        }
+        logger.info("Shutting down...");
+    }
 }

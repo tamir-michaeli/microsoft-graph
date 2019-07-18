@@ -1,4 +1,4 @@
-package objects;
+package utils;
 
 import io.logz.sender.SenderStatusReporter;
 import org.slf4j.Logger;
