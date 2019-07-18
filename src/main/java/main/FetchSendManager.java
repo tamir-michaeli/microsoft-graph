@@ -21,13 +21,15 @@ import java.util.concurrent.TimeUnit;
 public class FetchSendManager {
 
     private static final Logger logger = LoggerFactory.getLogger(FetchSendManager.class.getName());
+    private static final int NO_DELAY = 0;
 
-    private ScheduledExecutorService taskScheduler;
-    private ArrayList<JsonArrayRequest> dataRequests;
-    private LogzioJavaSenderParams logzioSenderParams;
+    private final ScheduledExecutorService taskScheduler;
+    private final ArrayList<JsonArrayRequest> dataRequests;
+    private final LogzioJavaSenderParams logzioSenderParams;
+    private final LogzioSender sender;
+    private final int interval;
     private ScheduledExecutorService senderExecutors;
-    private LogzioSender sender;
-    private int interval;
+
 
     public FetchSendManager(ArrayList<JsonArrayRequest> dataRequests, LogzioJavaSenderParams senderParams, int interval) {
         this.taskScheduler = Executors.newSingleThreadScheduledExecutor();
@@ -38,7 +40,8 @@ public class FetchSendManager {
     }
 
     public void start() {
-        taskScheduler.scheduleAtFixedRate(this::pullAndSendData,0,interval , TimeUnit.SECONDS);
+        logger.info("starting fetch-send scheduled operation");
+        taskScheduler.scheduleAtFixedRate(this::pullAndSendData, NO_DELAY, interval, TimeUnit.SECONDS);
         sender.start();
     }
 
@@ -68,27 +71,27 @@ public class FetchSendManager {
                     .setCompressRequests(logzioSenderParams.isCompressRequests())
                     .build();
 
-        SenderStatusReporter statusReporter = StatusReporterFactory.newSenderStatusReporter(logger);
-        LogzioSender.Builder senderBuilder = LogzioSender
-                .builder();
-        senderBuilder.setTasksExecutor(senderExecutors);
-        senderBuilder.setReporter(statusReporter);
-        senderBuilder.setHttpsRequestConfiguration(requestConf);
-        senderBuilder.setDebug(logzioSenderParams.isDebug());
+            SenderStatusReporter statusReporter = StatusReporterFactory.newSenderStatusReporter(logger);
+            LogzioSender.Builder senderBuilder = LogzioSender
+                    .builder();
+            senderBuilder.setTasksExecutor(senderExecutors);
+            senderBuilder.setReporter(statusReporter);
+            senderBuilder.setHttpsRequestConfiguration(requestConf);
+            senderBuilder.setDebug(logzioSenderParams.isDebug());
 
-        if (logzioSenderParams.isFromDisk()) {
-            senderBuilder.withDiskQueue()
-                    .setQueueDir(logzioSenderParams.getQueueDir())
-                    .setCheckDiskSpaceInterval(logzioSenderParams.getDiskSpaceCheckInterval())
-                    .setFsPercentThreshold(logzioSenderParams.getFileSystemFullPercentThreshold())
-                    .setGcPersistedQueueFilesIntervalSeconds(logzioSenderParams.getGcPersistedQueueFilesIntervalSeconds())
-                    .endDiskQueue();
-        } else {
-            senderBuilder.withInMemoryQueue()
-                    .setCapacityInBytes(logzioSenderParams.getInMemoryQueueCapacityInBytes())
-                    .setLogsCountLimit(logzioSenderParams.getLogsCountLimit())
-                    .endInMemoryQueue();
-        }
+            if (logzioSenderParams.isFromDisk()) {
+                senderBuilder.withDiskQueue()
+                        .setQueueDir(logzioSenderParams.getQueueDir())
+                        .setCheckDiskSpaceInterval(logzioSenderParams.getDiskSpaceCheckInterval())
+                        .setFsPercentThreshold(logzioSenderParams.getFileSystemFullPercentThreshold())
+                        .setGcPersistedQueueFilesIntervalSeconds(logzioSenderParams.getGcPersistedQueueFilesIntervalSeconds())
+                        .endDiskQueue();
+            } else {
+                senderBuilder.withInMemoryQueue()
+                        .setCapacityInBytes(logzioSenderParams.getInMemoryQueueCapacityInBytes())
+                        .setLogsCountLimit(logzioSenderParams.getLogsCountLimit())
+                        .endInMemoryQueue();
+            }
 
             return senderBuilder.build();
         } catch (LogzioParameterErrorException e) {

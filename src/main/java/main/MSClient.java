@@ -12,42 +12,22 @@ import java.util.ArrayList;
 
 public class MSClient {
 
-    private String configFile;
+    private final String configFile;
 
     public MSClient(String configFile) {
         this.configFile = configFile;
     }
 
     public void start() {
-
         MSGraphConfiguration configuration = loadMSGraphConfig(configFile);
         MSGraphRequestExecutor client = new MSGraphRequestExecutor(configuration.getAzureADClient());
         Office365Apis officeApis = new Office365Apis(client);
 
-
-
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(officeApis::getSignIns);
         requests.add(officeApis::getDirectoryAudits);
-        FetchSendManager manager = new FetchSendManager(requests , configuration.getLogzioSenderParameters(), configuration.getAzureADClient().getPullInterval());
+        FetchSendManager manager = new FetchSendManager(requests, configuration.getLogzioSenderParameters(), configuration.getAzureADClient().getPullInterval());
         manager.start();
-
-//        Runnable runnable = () -> {
-//            while (true) {
-//                try {
-//                    for (JsonArrayRequest request : requests) {
-//                        System.out.println(request.getData(0,0));
-//                    }
-//                    Thread.sleep(interval);
-//
-////                client.listSubscriptions();
-//                } catch (InterruptedException e) {
-//                    //FIXME add solution here
-//                }
-//            }
-//        };
-//        Thread thread = new Thread(runnable);
-//        thread.start();
     }
 
     private MSGraphConfiguration loadMSGraphConfig(String yamlFile) {

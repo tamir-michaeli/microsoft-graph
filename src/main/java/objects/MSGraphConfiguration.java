@@ -5,9 +5,9 @@ public class MSGraphConfiguration {
 
     private AzureADClient azureADClient;
     private LogzioJavaSenderParams logzioSenderParameters;
-    //todo: pull backwards
 
-    public MSGraphConfiguration() {}
+    public MSGraphConfiguration() {
+    }
 
     public void setAzureADClient(AzureADClient azureADClient) {
         this.azureADClient = azureADClient;
