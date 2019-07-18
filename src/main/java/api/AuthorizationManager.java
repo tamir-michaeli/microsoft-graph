@@ -1,7 +1,6 @@
 package api;
 
-import okio.Utf8;
-import operations.AzureADClient;
+import objects.AzureADClient;
 import org.apache.http.HttpException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,7 +89,6 @@ public class AuthorizationManager {
                 response.append(inputLine);
             }
             in.close();
-
             if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 JSONObject jsonResponse = new JSONObject(response.toString());
                 accessToken = jsonResponse.get(JSON_ACCESS_TOKEN).toString();

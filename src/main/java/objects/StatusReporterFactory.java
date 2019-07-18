@@ -1,4 +1,4 @@
-package operations;
+package objects;
 
 import io.logz.sender.SenderStatusReporter;
 import org.slf4j.Logger;
@@ -16,6 +16,7 @@ public class StatusReporterFactory {
             }
 
             public void warning(String s) {
+                logger.warn("AzureADClient" + s);
                 logger.warn("AzureADClient" + s);
             }
 
@@ -35,3 +36,4 @@ public class StatusReporterFactory {
         };
     }
 }
+

@@ -1,4 +1,4 @@
-package operations;
+package objects;
 
 public class AzureADClient {
 

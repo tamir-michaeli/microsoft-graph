@@ -4,7 +4,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import operations.AzureADClient;
+import objects.AzureADClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -167,12 +167,12 @@ public class MSGraphRequestExecutor {
 //        return null;
 //    }
 
-    private void parseJsonArray(String stringArray, JsonOps ops) throws JSONException {
-        JSONArray array = (JSONArray) JSONParser.parseJSON(stringArray);
-        for (int i = 0; i < array.length() ; i++) {
-            ops.arrayOp(array.getJSONObject(i));
-        }
-    }
+//    private void parseJsonArray(String stringArray, JsonOps ops) throws JSONException {
+//        JSONArray array = (JSONArray) JSONParser.parseJSON(stringArray);
+//        for (int i = 0; i < array.length() ; i++) {
+//            ops.arrayOp(array.getJSONObject(i));
+//        }
+//    }
 
 //   ***Content Types***
 //    Audit.AzureActiveDirectory

@@ -1,6 +1,4 @@
-package main;
-
-import operations.AzureADClient;
+package objects;
 
 public class MSGraphConfiguration {
 

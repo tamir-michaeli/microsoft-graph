@@ -2,6 +2,8 @@ package main;
 
 import api.MSGraphRequestExecutor;
 import api.Office365Apis;
+import objects.JsonArrayRequest;
+import objects.MSGraphConfiguration;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
