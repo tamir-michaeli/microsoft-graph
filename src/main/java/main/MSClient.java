@@ -10,6 +10,9 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import javax.naming.AuthenticationException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -23,12 +26,18 @@ public class MSClient {
     }
 
     public void start() {
-        MSGraphConfiguration configuration = loadMSGraphConfig(configFile);
+        MSGraphConfiguration configuration;
+        try {
+            configuration = loadMSGraphConfig(configFile);
+        } catch (FileNotFoundException e) {
+            logger.error("error loading config file: {}", e.getMessage(), e);
+            return;
+        }
         if (configuration == null) {
             logger.error("error loading configuration, yaml config file malformed or missing required fields");
             return;
         }
-        MSGraphRequestExecutor client = null;
+        MSGraphRequestExecutor client;
         try {
             client = new MSGraphRequestExecutor(configuration.getAzureADClient());
         } catch (AuthenticationException e) {
@@ -44,11 +53,9 @@ public class MSClient {
         manager.start();
     }
 
-    private MSGraphConfiguration loadMSGraphConfig(String yamlFile) {
+    private MSGraphConfiguration loadMSGraphConfig(String yamlFile) throws FileNotFoundException {
         Yaml yaml = new Yaml(new Constructor(MSGraphConfiguration.class));
-        InputStream inputStream = this.getClass()
-                .getClassLoader()
-                .getResourceAsStream(yamlFile);
+        InputStream inputStream = new FileInputStream(new File(yamlFile));
         return (MSGraphConfiguration) yaml.load(inputStream);
     }
 }
