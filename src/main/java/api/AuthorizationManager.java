@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.AuthenticationException;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -42,12 +43,14 @@ public class AuthorizationManager {
     private long currentTokenExpiry = 0;
 
 
-    public AuthorizationManager(AzureADClient client) {
+    public AuthorizationManager(AzureADClient client) throws AuthenticationException {
         logger.info("Initializing authorization manager");
         this.clientId = client.getClientId();
         this.clientSecret = client.getClientSecret();
         this.tenantId = client.getTenantId();
-        retrieveToken();
+        if (!retrieveToken()) {
+            throw new AuthenticationException("can't get access token, quiting..");
+        }
     }
 
     public String getAccessToken() {
@@ -96,7 +99,7 @@ public class AuthorizationManager {
                 currentTokenExpiry = System.currentTimeMillis() + jsonResponse.getInt(JSON_ACCESS_TOKEN_EXPIRE_DURATION) * 1000;
                 return true;
             } else {
-                throw new HttpException("Invalid response code: " + con.getResponseCode() + "\n response: " + response);
+                throw new HttpException("Invalid response code while fetching access token: " + con.getResponseCode() + "\n response: " + response);
             }
 
         } catch (IOException | JSONException | HttpException e) {

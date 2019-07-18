@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,7 +34,7 @@ public class MSGraphRequestExecutor {
     private final AuthorizationManager auth;
     private final int interval; // in millis
 
-    public MSGraphRequestExecutor(AzureADClient client) {
+    public MSGraphRequestExecutor(AzureADClient client) throws AuthenticationException {
         auth = new AuthorizationManager(client);
         this.interval = client.getPullInterval() * 1000;
     }
