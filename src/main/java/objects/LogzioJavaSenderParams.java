@@ -11,7 +11,7 @@ public class LogzioJavaSenderParams {
     private String type = "Microsoft-Graph";
     private String accountToken;
     private int threadPoolSize = 3;
-    private boolean debug = true;
+    private boolean debug = false;
     private boolean compressRequests = true;
     private boolean fromDisk = true;
 
@@ -59,6 +59,10 @@ public class LogzioJavaSenderParams {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 
     public boolean isCompressRequests() {

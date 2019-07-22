@@ -44,7 +44,7 @@ public class AuthorizationManager {
 
 
     public AuthorizationManager(AzureADClient client) throws AuthenticationException {
-        new AuthorizationManager(client, MICROSOFTONLINE_ADDRESS + client.getTenantId() + OAUTH2_TOKEN_API);
+        this(client, MICROSOFTONLINE_ADDRESS + client.getTenantId() + OAUTH2_TOKEN_API);
     }
 
     public AuthorizationManager(AzureADClient client, String url) throws AuthenticationException {

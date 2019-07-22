@@ -20,21 +20,16 @@ public class MSClient {
 
     private static final Logger logger = LoggerFactory.getLogger(MSClient.class.getName());
     private final String configFile;
+    private MSGraphConfiguration configuration;
 
     public MSClient(String configFile) {
         this.configFile = configFile;
+        loadConfig();
     }
 
     public void start() {
-        MSGraphConfiguration configuration;
-        try {
-            configuration = loadMSGraphConfig(configFile);
-        } catch (FileNotFoundException e) {
-            logger.error("error loading config file: {}", e.getMessage(), e);
-            return;
-        }
-        if (configuration == null) {
-            logger.error("error loading configuration, yaml config file malformed or missing required fields");
+
+        if (getConfiguration() == null) {
             return;
         }
         MSGraphRequestExecutor client;
@@ -51,6 +46,22 @@ public class MSClient {
         requests.add(officeApis::getDirectoryAudits);
         FetchSendManager manager = new FetchSendManager(requests, configuration.getLogzioSenderParameters(), configuration.getAzureADClient().getPullInterval());
         manager.start();
+    }
+
+    public MSGraphConfiguration getConfiguration() {
+        return this.configuration;
+    }
+
+    private void loadConfig() {
+        try {
+            configuration = loadMSGraphConfig(configFile);
+        } catch (FileNotFoundException e) {
+            logger.error("error loading config file: {}", e.getMessage(), e);
+            return;
+        }
+        if (configuration == null) {
+            logger.error("error loading configuration, yaml config file malformed or missing required fields");
+        }
     }
 
     private MSGraphConfiguration loadMSGraphConfig(String yamlFile) throws FileNotFoundException {

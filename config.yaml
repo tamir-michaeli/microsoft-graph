@@ -6,3 +6,4 @@ azureADClient:
 
 logzioSenderParameters:
   accountToken: "oCwtQDtWjDOMcHXHGGNrnRgkEMxCDuiO"
+  debug: true

@@ -5,7 +5,7 @@ public class AzureADClient {
     private String tenantId;
     private String clientId;
     private String clientSecret;
-    private int pullInterval;
+    private int pullInterval = 300;
 
     public AzureADClient() {
     }

@@ -1,5 +1,4 @@
 azureADClient:
-  pullInterval: 300
   tenantId: "sample-tenant-id"
   clientId: "sample-client-id"
   clientSecret: "sample+client:secret*"
