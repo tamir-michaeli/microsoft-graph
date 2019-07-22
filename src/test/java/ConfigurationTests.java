@@ -14,7 +14,7 @@ public class ConfigurationTests {
     public void loadMinimalConfigurationTest() throws FileNotFoundException {
         String testFileString = new File(getClass().getClassLoader().getResource("testMinimalConfig.yaml").getFile()).getAbsolutePath();
         MSGraphConfiguration configuration = (new MSClient(testFileString)).getConfiguration();
-        Assert.assertNotEquals(null, configuration);
+        Assert.assertNotSame(null, configuration);
 
         Assert.assertEquals("sample-client-id",configuration.getAzureADClient().getClientId());
         Assert.assertEquals("sample-tenant-id",configuration.getAzureADClient().getTenantId());
@@ -30,7 +30,7 @@ public class ConfigurationTests {
     public void loadFullConfigurationTest() throws FileNotFoundException {
         String testFileString = new File(getClass().getClassLoader().getResource("testFullConfig.yaml").getFile()).getAbsolutePath();
         MSGraphConfiguration configuration = (new MSClient(testFileString)).getConfiguration();
-        Assert.assertNotEquals(null, configuration);
+        Assert.assertNotSame(null, configuration);
         Assert.assertEquals("sample-client-id",configuration.getAzureADClient().getClientId());
         Assert.assertEquals("sample-tenant-id",configuration.getAzureADClient().getTenantId());
         Assert.assertEquals("sample+client:secret*",configuration.getAzureADClient().getClientSecret());

@@ -1,4 +1,5 @@
-[
+{
+  "value": [
     {
       "id": "aaaaa-bbbb-cccc-dddd-123456789",
       "createdDateTime": "2019-07-22T12:56:27.7248992Z",
@@ -10,7 +11,7 @@
       "ipAddress": "199.403.104.57",
       "clientAppUsed": "Browser",
       "resourceDisplayName": "Windows Azure Active Directory",
-      "resourceId": "00000002-0000-0000-c000-000000000000",
+      "resourceId": "00000002-0000-0000-c000-000000000000"
     },
     {
       "id": "xxxxxx-yyyy-zzzz-wwww-987654321",
@@ -26,3 +27,4 @@
       "resourceId": "00000002-0000-0000-c000-000000000000"
     }
   ]
+}
