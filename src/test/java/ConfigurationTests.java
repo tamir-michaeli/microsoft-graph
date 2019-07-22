@@ -1,5 +1,6 @@
 import main.MSClient;
 import objects.MSGraphConfiguration;
+import objects.MissingParameter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -52,11 +53,21 @@ public class ConfigurationTests {
     }
 
     @Test
-    public void WrongParameterConfigTest() {
+    public void wrongParameterConfigTest() {
         org.testng.Assert.assertThrows(YAMLException.class, () -> {
                 String testFileString = new File(getClass().getClassLoader().getResource("wrongParameterNameConfig.yaml").getFile()).getAbsolutePath();
                 new MSClient(testFileString).getConfiguration();
         });
     }
+
+    @Test
+    public void missingParameterConfigTest() {
+        org.testng.Assert.assertThrows(MissingParameter.class, () -> {
+                String testFileString = new File(getClass().getClassLoader().getResource("missingParameterConfig.yaml").getFile()).getAbsolutePath();
+                new MSClient(testFileString).getConfiguration();
+        });
+    }
+
+
 
 }
