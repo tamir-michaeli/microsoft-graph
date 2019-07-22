@@ -16,10 +16,6 @@ public final class HangupInterceptor extends Thread {
     @Override
     public void run() {
         logger.info("Received hang up - stopping...");
-        try {
             main.shutdown();
-        } catch (Exception ex) {
-            logger.error("Error during stopping main: {}", ex.getMessage(), ex);
-        }
     }
 }
