@@ -30,31 +30,35 @@ public class AuthorizationManager {
     private static final String REQUEST_CONTENT_LENGTH = "Content-Length";
     private static final String JSON_ACCESS_TOKEN = "access_token";
     private static final String JSON_ACCESS_TOKEN_EXPIRE_DURATION = "expires_in";
-    private static final int FIVE_MINUTES = 5 * 60 * 1000;
+    private static final int ONE_MINUTES = 60 * 1000;
     private static final String GRANT_TYPE = "grant_type=";
     private static final String CLIENT_ID = "&client_id=";
     private static final String SCOPE = "&scope=";
     private static final String CLIENT_SECRET = "&client_secret=";
 
-    private final String clientId;
-    private final String clientSecret;
-    private final String tenantId;
+    private String clientId;
+    private String clientSecret;
+    private String apiUrl;
     private String accessToken;
     private long currentTokenExpiry = 0;
 
 
     public AuthorizationManager(AzureADClient client) throws AuthenticationException {
+        new AuthorizationManager(client, MICROSOFTONLINE_ADDRESS + client.getTenantId() + OAUTH2_TOKEN_API);
+    }
+
+    public AuthorizationManager(AzureADClient client, String url) throws AuthenticationException {
         logger.info("Initializing authorization manager");
         this.clientId = client.getClientId();
         this.clientSecret = client.getClientSecret();
-        this.tenantId = client.getTenantId();
+        this.apiUrl = url;
         if (!retrieveToken()) {
             throw new AuthenticationException("can't get access token, quiting..");
         }
     }
 
     public String getAccessToken() {
-        if (System.currentTimeMillis() > currentTokenExpiry - FIVE_MINUTES) { // 5 minutes safety
+        if (System.currentTimeMillis() > currentTokenExpiry - ONE_MINUTES) { // 1 minutes safety
             if (!retrieveToken()) {
                 return null;
             }
@@ -63,9 +67,6 @@ public class AuthorizationManager {
     }
 
     private boolean retrieveToken() {
-
-        String url = MICROSOFTONLINE_ADDRESS + tenantId + OAUTH2_TOKEN_API;
-
         try {
             String urlParameters = GRANT_TYPE + CLIENT_CREDENTIALS
                     + CLIENT_ID + clientId
@@ -74,9 +75,8 @@ public class AuthorizationManager {
             byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
 
-            URL obj = new URL(url);
+            URL obj = new URL(apiUrl);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
             con.setDoOutput(true);
             con.setRequestProperty(REQUEST_CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
             con.setRequestProperty(REQUEST_CONTENT_LENGTH, Integer.toString(postDataLength));
@@ -84,7 +84,6 @@ public class AuthorizationManager {
             try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
                 wr.write(postData);
             }
-
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();

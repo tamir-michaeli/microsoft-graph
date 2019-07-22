@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 
 import static api.MSGraphRequestExecutor.API_ULR;
@@ -27,6 +28,8 @@ public class Office365Apis {
             return requestExecutor.getAllPages(API_ULR + AD_SINGINS + requestExecutor.timeFilterSuffix(CREATED_DATE_TIME_FIELD));
         } catch (IOException | JSONException e) {
             logger.error("error parsing response: {}", e.getMessage(), e);
+        } catch (AuthenticationException e) {
+            logger.error(e.getMessage(), e);
         }
         return new JSONArray();
     }
@@ -36,6 +39,8 @@ public class Office365Apis {
             return requestExecutor.getAllPages(API_ULR + AD_DIRECTORY_AUDITS + requestExecutor.timeFilterSuffix(ACTIVITY_DATE_TIME_FIELD));
         } catch (IOException | JSONException e) {
             logger.error("error parsing response: {}", e.getMessage(), e);
+        } catch (AuthenticationException e) {
+            logger.error(e.getMessage(), e);
         }
         return new JSONArray();
     }

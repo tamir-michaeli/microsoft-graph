@@ -39,11 +39,14 @@ public class MSGraphRequestExecutor {
         this.interval = client.getPullInterval() * 1000;
     }
 
-    private Response executeRequest(String url) throws IOException {
+    private Response executeRequest(String url) throws IOException, AuthenticationException {
         OkHttpClient client = new OkHttpClient();
-        auth.getAccessToken();
+        String accessToken = auth.getAccessToken();
+        if (accessToken == null) {
+            throw new AuthenticationException("couldn't get access token, will try at the next pull");
+        }
         Request request = new Request.Builder()
-                .addHeader(AUTHORIZATION, BEARER_PREFIX + auth.getAccessToken())
+                .addHeader(AUTHORIZATION, BEARER_PREFIX + accessToken)
                 .addHeader(CONTENT_TYPE, APPLICATION_JSON)
                 .url(url)
                 .get()
@@ -51,7 +54,7 @@ public class MSGraphRequestExecutor {
         return client.newCall(request).execute();
     }
 
-    public JSONArray getAllPages(String url) throws IOException, JSONException {
+    public JSONArray getAllPages(String url) throws IOException, JSONException, AuthenticationException {
         System.out.println("URL: " + url);
         Response response = executeRequest(url);
         String responseBody = response.body().string();
