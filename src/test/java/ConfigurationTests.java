@@ -55,7 +55,7 @@ public class ConfigurationTests {
     public void WrongParameterConfigTest() {
         org.testng.Assert.assertThrows(YAMLException.class, () -> {
                 String testFileString = new File(getClass().getClassLoader().getResource("wrongParameterNameConfig.yaml").getFile()).getAbsolutePath();
-                MSGraphConfiguration configuration = (new MSClient(testFileString)).getConfiguration();
+                new MSClient(testFileString).getConfiguration();
         });
     }
 

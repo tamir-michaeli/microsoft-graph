@@ -4,10 +4,14 @@ import api.MSGraphRequestExecutor;
 import api.Office365Apis;
 import objects.JsonArrayRequest;
 import objects.MSGraphConfiguration;
+import objects.MissingParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.introspector.MissingProperty;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.representer.Representer;
 
 import javax.naming.AuthenticationException;
 import java.io.File;
@@ -53,6 +57,18 @@ public class MSClient {
     private MSGraphConfiguration loadMSGraphConfig(String yamlFile) throws FileNotFoundException {
         Yaml yaml = new Yaml(new Constructor(MSGraphConfiguration.class));
         InputStream inputStream = new FileInputStream(new File(yamlFile));
-        return (MSGraphConfiguration) yaml.load(inputStream);
+        MSGraphConfiguration config = yaml.load(inputStream);
+
+        if (config.getLogzioSenderParameters().getAccountToken() == null
+            || config.getAzureADClient().getTenantId() == null
+            || config.getAzureADClient().getClientId() == null
+            || config.getAzureADClient().getClientSecret() == null) {
+            throw new MissingParameter("The following parameters are mandatory: \n" +
+                    "azureADClient.tenantId, \n" +
+                    "azureADClient.clientId,\n" +
+                    "azureADClient.clientSecret,\n" +
+                    "logzioSenderParameters.accountToken");
+        }
+        return config;
     }
 }
