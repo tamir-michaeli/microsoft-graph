@@ -28,10 +28,10 @@ public class ApiTests {
 
     @Test
     public void accessTokenRequestTest() throws InterruptedException, UnsupportedEncodingException {
-        String cliendID = "1234-5678";
+        String clientID = "1234-5678";
         String clientSecret = "shh don't tell";
         AzureADClient client = new AzureADClient();
-        client.setClientId(cliendID);
+        client.setClientId(clientID);
         client.setClientSecret(clientSecret);
         client.setTenantId("aaa-bbb");
         mockWebServer.enqueue(new MockResponse());
@@ -40,7 +40,7 @@ public class ApiTests {
         });
         RecordedRequest request = mockWebServer.takeRequest();
         String body = request.getBody().readUtf8();
-        Assert.assertTrue(body.contains("client_id=" + cliendID));
+        Assert.assertTrue(body.contains("client_id=" + clientID));
         Assert.assertTrue(body.contains("client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8.toString())));
     }
 }
