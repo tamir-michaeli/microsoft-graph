@@ -35,7 +35,7 @@ public class ApiTests {
         client.setClientSecret(clientSecret);
         client.setTenantId("aaa-bbb");
         mockWebServer.enqueue(new MockResponse());
-        Assert.assertThrows(AuthenticationException.class, () -> {
+            Assert.assertThrows(AuthenticationException.class, () -> {
             AuthorizationManager manager = new AuthorizationManager(client,"http://localhost:8123");
         });
         RecordedRequest request = mockWebServer.takeRequest();

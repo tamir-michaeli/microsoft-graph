@@ -2,13 +2,15 @@ import main.MSClient;
 import objects.MSGraphConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class ConfigurationTests {
 
     @Test
-    public void loadMinimalConfigurationTest() {
+    public void loadMinimalConfigurationTest() throws FileNotFoundException {
         String testFileString = new File(getClass().getClassLoader().getResource("testMinimalConfig.yaml").getFile()).getAbsolutePath();
         MSGraphConfiguration configuration = (new MSClient(testFileString)).getConfiguration();
         Assert.assertNotEquals(null, configuration);
@@ -24,7 +26,7 @@ public class ConfigurationTests {
     }
 
     @Test
-    public void loadFullConfigurationTest() {
+    public void loadFullConfigurationTest() throws FileNotFoundException {
         String testFileString = new File(getClass().getClassLoader().getResource("testFullConfig.yaml").getFile()).getAbsolutePath();
         MSGraphConfiguration configuration = (new MSClient(testFileString)).getConfiguration();
         Assert.assertNotEquals(null, configuration);
@@ -40,8 +42,21 @@ public class ConfigurationTests {
         Assert.assertEquals(10000, configuration.getLogzioSenderParameters().getLogsCountLimit());
         Assert.assertEquals(true, configuration.getLogzioSenderParameters().isDebug());
         Assert.assertEquals(false, configuration.getLogzioSenderParameters().isFromDisk());
-
     }
 
+    @Test
+    public void missingConfigFileTest() {
+        org.testng.Assert.assertThrows(FileNotFoundException.class,() -> {
+            new MSClient("imaginaryConfigFile.yaml");
+        });
+    }
+
+    @Test
+    public void WrongParameterConfigTest() {
+        org.testng.Assert.assertThrows(YAMLException.class, () -> {
+                String testFileString = new File(getClass().getClassLoader().getResource("wrongParameterNameConfig.yaml").getFile()).getAbsolutePath();
+                MSGraphConfiguration configuration = (new MSClient(testFileString)).getConfiguration();
+        });
+    }
 
 }

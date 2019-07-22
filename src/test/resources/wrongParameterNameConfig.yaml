@@ -1,0 +1,7 @@
+azureADClient:
+  notARealParameter: "sample-tenant-id"
+  clientId: "sample-client-id"
+  clientSecret: "sample+client:secret*"
+
+logzioSenderParameters:
+  accountToken: "sampleAccountToken"
