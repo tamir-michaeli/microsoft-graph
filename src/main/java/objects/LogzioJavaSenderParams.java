@@ -14,6 +14,7 @@ public class LogzioJavaSenderParams {
     private boolean debug = false;
     private boolean compressRequests = true;
     private boolean fromDisk = true;
+    private int senderDrainIntervals = 5;
 
     // In-memory queue parameters
     private int inMemoryQueueCapacityInBytes = 1024 * 1024 * 100;
@@ -38,6 +39,10 @@ public class LogzioJavaSenderParams {
 
     public void setListenerUrl(String listenerUrl) {
         this.listenerUrl = HTTPS_PREFIX + listenerUrl + PORT_SUFFIX;
+    }
+
+    public void setFullListenerUrl(String listenerUrl) {
+        this.listenerUrl = listenerUrl;
     }
 
     public String getType() {
@@ -123,5 +128,13 @@ public class LogzioJavaSenderParams {
 
     public void setFromDisk(boolean fromDisk) {
         this.fromDisk = fromDisk;
+    }
+
+    public int getSenderDrainIntervals() {
+        return senderDrainIntervals;
+    }
+
+    public void setSenderDrainIntervals(int senderDrainIntervals) {
+        this.senderDrainIntervals = senderDrainIntervals;
     }
 }

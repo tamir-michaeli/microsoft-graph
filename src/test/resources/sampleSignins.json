@@ -12,19 +12,6 @@
       "clientAppUsed": "Browser",
       "resourceDisplayName": "Windows Azure Active Directory",
       "resourceId": "00000002-0000-0000-c000-000000000000"
-    },
-    {
-      "id": "xxxxxx-yyyy-zzzz-wwww-987654321",
-      "createdDateTime": "2019-07-22T12:53:27.6967112Z",
-      "userDisplayName": "Jackie Chan",
-      "userPrincipalName": "jackie.chan@rushour.onmicrosoft.com",
-      "userId": "im-crazy-but-not-stupid",
-      "appId": "0000000c-0000-0000-c000-000000000000",
-      "appDisplayName": "Microsoft App Access Panel",
-      "ipAddress": "102.1.56.57",
-      "clientAppUsed": "Browser",
-      "resourceDisplayName": "Windows Azure Active Directory",
-      "resourceId": "00000002-0000-0000-c000-000000000000"
     }
   ]
 }

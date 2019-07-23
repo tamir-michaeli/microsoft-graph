@@ -48,7 +48,7 @@ public class FetchSendManager implements Shutdownable {
         sender.start();
     }
 
-    private void pullAndSendData() {
+    public void pullAndSendData() {
         for (JsonArrayRequest request : dataRequests) {
             JSONArray result = request.getData();
             for (int i = 0; i < result.length(); i++) {
@@ -81,6 +81,7 @@ public class FetchSendManager implements Shutdownable {
             senderBuilder.setReporter(statusReporter);
             senderBuilder.setHttpsRequestConfiguration(requestConf);
             senderBuilder.setDebug(logzioSenderParams.isDebug());
+            senderBuilder.setDrainTimeoutSec(logzioSenderParams.getSenderDrainIntervals());
 
             if (logzioSenderParams.isFromDisk()) {
                 senderBuilder.withDiskQueue()
