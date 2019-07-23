@@ -57,7 +57,7 @@ public class FetchSendTests {
                 .when(request().withMethod("POST"))
                 .respond(response().withStatusCode(200));
         mockServer
-                .when(request().withMethod("GET").withPath("/request"))
+                .when(request().withMethod("GET").withPath("/chainRequest"))
                 .respond(response().withStatusCode(200).withBody(requestResponseBody.toString()));
         mockServer
                 .when(request().withMethod("GET").withPath("/nextlink1"))
@@ -117,7 +117,7 @@ public class FetchSendTests {
     public void paginationTest() throws IOException, JSONException, AuthenticationException {
         MSGraphRequestExecutor requestExecutor = new MSGraphRequestExecutor(ApiTests.getSampleAzureADClient()
                 , () -> "sampleAccessToken");
-        JSONArray jsonArray = requestExecutor.getAllPages("http://localhost:8070/request");
+        JSONArray jsonArray = requestExecutor.getAllPages("http://localhost:8070/chainRequest");
         Assert.assertEquals(3, jsonArray.length());
     }
 

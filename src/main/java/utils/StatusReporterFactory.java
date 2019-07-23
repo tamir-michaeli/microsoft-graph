@@ -8,30 +8,30 @@ public class StatusReporterFactory {
         return new SenderStatusReporter() {
 
             public void error(String s) {
-                logger.error("AzureADClient" + s);
+                logger.error("MSGraph: " + s);
             }
 
             public void error(String s, Throwable throwable) {
-                logger.error("AzureADClient" + s + " " + throwable.getMessage());
+                logger.error("MSGraph: " + s + " " + throwable.getMessage());
             }
 
             public void warning(String s) {
-                logger.warn("AzureADClient" + s);
-                logger.warn("AzureADClient" + s);
+                logger.warn("MSGraph: " + s);
+                logger.warn("MSGraph: " + s);
             }
 
             public void warning(String s, Throwable throwable) {
-                logger.warn("AzureADClient" + s + " " + throwable.getMessage());
+                logger.warn("MSGraph: " + s + " " + throwable.getMessage());
             }
 
             @Override
             public void info(String s) {
-                logger.info("AzureADClient" + s);
+                logger.info("MSGraph: " + s);
             }
 
             @Override
             public void info(String s, Throwable throwable) {
-                logger.info("AzureADClient" + s + " " + throwable.getMessage());
+                logger.info("MSGraph: " + s + " " + throwable.getMessage());
             }
         };
     }
