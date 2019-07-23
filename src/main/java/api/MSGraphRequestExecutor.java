@@ -31,6 +31,8 @@ public class MSGraphRequestExecutor {
     private static final String UTC = "UTC";
     private static final String FILTER_PREFIX = "?$filter=";
     private static final String GREATER_OR_EQUEAL = " ge ";
+    private static final String JSON_ERROR = "error";
+    private static final String JSON_MESSAGE = "message";
 
     private final Authornicator auth;
     private final int interval; // in millis
@@ -66,17 +68,22 @@ public class MSGraphRequestExecutor {
         String responseBody = response.body().string();
         JSONObject resultJson = new JSONObject(responseBody);
 
-        JSONArray thisPage = resultJson.getJSONArray(JSON_VALUE);
-        System.out.println(thisPage.length() + " RECORDS IN THIS PAGE");
-        if (resultJson.has(JSON_NEXT_LINK)) {
-            System.out.println("FOUND NEXT PAGE = " + resultJson.getString("@odata.nextLink"));
-            JSONArray nextPages = getAllPages(resultJson.getString(JSON_NEXT_LINK));
-            for (int i = 0; i < thisPage.length(); i++) {
-                nextPages.put(thisPage.get(i));
+        if (resultJson.has(JSON_VALUE)) {
+            JSONArray thisPage = resultJson.getJSONArray(JSON_VALUE);
+            System.out.println(thisPage.length() + " RECORDS IN THIS PAGE");
+            if (resultJson.has(JSON_NEXT_LINK)) {
+                System.out.println("FOUND NEXT PAGE = " + resultJson.getString("@odata.nextLink"));
+                JSONArray nextPages = getAllPages(resultJson.getString(JSON_NEXT_LINK));
+                for (int i = 0; i < thisPage.length(); i++) {
+                    nextPages.put(thisPage.get(i));
+                }
+                return nextPages;
             }
-            return nextPages;
+            return thisPage;
+        } else if (resultJson.has(JSON_ERROR)) {
+            throw new IOException(resultJson.getJSONObject(JSON_ERROR).getString(JSON_MESSAGE));
         }
-        return thisPage;
+        return new JSONArray();
     }
 
     public String timeFilterSuffix(String timeField) {

@@ -1,8 +1,8 @@
 azureADClient:
   pullInterval: 300
   tenantId: "c96a62e5-1e49-4187-b394-08b694e8bb0d"
-  clientId: "c514bf88-cd22-4196-a955-185e663d59a4"
-  clientSecret: "D+z+3cVlL+:bgxhXa02F799QujC0-YhI"
+  clientId: "7b641758-f26e-499f-9698-420fe8d6115e"
+  clientSecret: "o:.vB7XHsGT0_Mgc[JVD7ep1d3rao[nS"
 
 logzioSenderParameters:
   accountToken: "oCwtQDtWjDOMcHXHGGNrnRgkEMxCDuiO"
