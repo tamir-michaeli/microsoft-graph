@@ -3,6 +3,8 @@ import objects.AzureADClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -28,19 +30,23 @@ public class ApiTests {
 
     @Test
     public void accessTokenRequestTest() throws InterruptedException, UnsupportedEncodingException {
-        String clientID = "1234-5678";
-        String clientSecret = "shh don't tell";
-        AzureADClient client = new AzureADClient();
-        client.setClientId(clientID);
-        client.setClientSecret(clientSecret);
-        client.setTenantId("aaa-bbb");
+        AzureADClient client = getSampleAzureADClient();
         mockWebServer.enqueue(new MockResponse());
             Assert.assertThrows(AuthenticationException.class, () -> {
             AuthorizationManager manager = new AuthorizationManager(client,"http://localhost:8123");
         });
         RecordedRequest request = mockWebServer.takeRequest();
         String body = request.getBody().readUtf8();
-        Assert.assertTrue(body.contains("client_id=" + clientID));
-        Assert.assertTrue(body.contains("client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8.toString())));
+        Assert.assertTrue(body.contains("client_id=" + client.getClientId()));
+        Assert.assertTrue(body.contains("client_secret=" + URLEncoder.encode(client.getClientSecret(), StandardCharsets.UTF_8.toString())));
+    }
+
+    public static AzureADClient getSampleAzureADClient() {
+        String clientID = "1234-5678";
+        String clientSecret = "shh don't tell";
+        AzureADClient client = new AzureADClient();
+        client.setClientId(clientID);
+        client.setClientSecret(clientSecret);
+        return client;
     }
 }

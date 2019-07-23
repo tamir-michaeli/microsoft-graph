@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Authornicator;
 
 import javax.naming.AuthenticationException;
 import java.io.IOException;
@@ -31,12 +32,17 @@ public class MSGraphRequestExecutor {
     private static final String FILTER_PREFIX = "?$filter=";
     private static final String GREATER_OR_EQUEAL = " ge ";
 
-    private final AuthorizationManager auth;
+    private final Authornicator auth;
     private final int interval; // in millis
 
     public MSGraphRequestExecutor(AzureADClient client) throws AuthenticationException {
         auth = new AuthorizationManager(client);
         this.interval = client.getPullInterval() * 1000;
+    }
+
+    public MSGraphRequestExecutor(AzureADClient client, Authornicator authornicator) {
+        this.auth = authornicator;
+        this.interval = client.getPullInterval();
     }
 
     private Response executeRequest(String url) throws IOException, AuthenticationException {

@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Authornicator;
 
 import javax.naming.AuthenticationException;
 import java.io.BufferedReader;
@@ -17,7 +18,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class AuthorizationManager {
+public class AuthorizationManager implements Authornicator {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class.getName());
 

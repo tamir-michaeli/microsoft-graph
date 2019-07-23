@@ -1,3 +1,4 @@
+import api.MSGraphRequestExecutor;
 import main.FetchSendManager;
 import objects.JsonArrayRequest;
 import objects.LogzioJavaSenderParams;
@@ -16,6 +17,7 @@ import org.mockserver.model.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.AuthenticationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +36,19 @@ public class FetchSendTests {
 
 
     @BeforeClass
-    public static void startMockServer() {
+    public static void startMockServer() throws JSONException {
         logger.info("starting mock server");
+        JSONObject requestResponseBody = new JSONObject();
+        requestResponseBody.put("@odata.nextLink", "http://localhost:8070/nextlink1");
+        requestResponseBody.put("value", new JSONArray("[{\"key\":1}]"));
+
+        JSONObject link1ResponseBody = new JSONObject();
+        link1ResponseBody.put("@odata.nextLink", "http://localhost:8070/nextlink2");
+        link1ResponseBody.put("value", new JSONArray("[{\"key\":2}]"));
+
+        JSONObject link2ResponseBody = new JSONObject();
+        link2ResponseBody.put("value", new JSONArray("[{\"key\":3}]"));
+
 
         mockServer = startClientAndServer(8070);
 
@@ -43,6 +56,15 @@ public class FetchSendTests {
         mockServerClient
                 .when(request().withMethod("POST"))
                 .respond(response().withStatusCode(200));
+        mockServer
+                .when(request().withMethod("GET").withPath("/request"))
+                .respond(response().withStatusCode(200).withBody(requestResponseBody.toString()));
+        mockServer
+                .when(request().withMethod("GET").withPath("/nextlink1"))
+                .respond(response().withStatusCode(200).withBody(link1ResponseBody.toString()));
+        mockServer
+                .when(request().withMethod("GET").withPath("/nextlink2"))
+                .respond(response().withStatusCode(200).withBody(link2ResponseBody.toString()));
     }
 
     @BeforeClass
@@ -54,9 +76,8 @@ public class FetchSendTests {
     }
 
     @AfterClass
-    public static void close() throws IOException {
+    public static void close() {
         mockServer.stop();
-
     }
 
     @Test
@@ -80,15 +101,25 @@ public class FetchSendTests {
         });
         System.out.println(requests.get(0).getData().toString());
 
-        FetchSendManager manager = new FetchSendManager(requests,senderParams, 10);
+        FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
         manager.start();
         manager.pullAndSendData();
         Thread.sleep(2000);
         HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
-        Assert.assertEquals(1,recordedRequests.length);
+        Assert.assertEquals(1, recordedRequests.length);
         JSONObject jsonObject = new JSONObject(recordedRequests[0].getBodyAsString());
-        Assert.assertEquals("aaaaa-bbbb-cccc-dddd-123456789",jsonObject.getString("id"));
-        Assert.assertEquals("John Smith",jsonObject.getString("userDisplayName"));
-        Assert.assertEquals("john.s@gmail.com",jsonObject.getString("userPrincipalName"));
+        Assert.assertEquals("aaaaa-bbbb-cccc-dddd-123456789", jsonObject.getString("id"));
+        Assert.assertEquals("John Smith", jsonObject.getString("userDisplayName"));
+        Assert.assertEquals("john.s@gmail.com", jsonObject.getString("userPrincipalName"));
     }
+
+    @Test
+    public void paginationTest() throws IOException, JSONException, AuthenticationException {
+        MSGraphRequestExecutor requestExecutor = new MSGraphRequestExecutor(ApiTests.getSampleAzureADClient()
+                , () -> "sampleAccessToken");
+        JSONArray jsonArray = requestExecutor.getAllPages("http://localhost:8070/request");
+        Assert.assertEquals(3, jsonArray.length());
+    }
+
+
 }
