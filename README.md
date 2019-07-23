@@ -1,6 +1,6 @@
 # Microsoft Graph API Integration
 
-This integration allows Logz.io users to receive Microsoft Graph APIs data related to their organization.
+Logzio-MSGraph is a integration that allows Logz.io users to receive Microsoft Graph APIs data related to their organization.
 The Supported APIs are:
    - Azure AD audit logs
    - Azure AD sign-in logs
@@ -19,7 +19,7 @@ At the app you created in the previous step, choose `Certificates & secrets` fro
 
 Click on `New client secret`.
 
-Add a description to this secret, like 'secret for Graph integration with logz.io'.
+Add a description to this secret, like 'secret for Logzio-MSGraph integration'.
 
 Choose `Never` under `Expires` and click on `Add`.
 
@@ -45,14 +45,15 @@ you'll have to contact an Administrator in your organization.
 
 ### 4. Create a config file
 
-Create a yaml file which contains the configuration parameters for this integration, check out our [sample config file](https://github.com/logzio/microsoft-graph/blob/master/config.yaml).
+Create a yaml file which contains the configuration parameters for Logzio-MSGraph, check out our [sample config file](https://github.com/logzio/microsoft-graph/blob/master/config.yaml).
 
-For a complete list of options, see the configuration parameters below the code block.👇
+For a complete list of options, see the configuration parameters below.👇
 
 | Parameter | Description |
 |---|---|
-| **logzioSenderParameters.url** | Listener URL. <br /> If your login URL is app.logz.io, use `listener.logz.io`. If your login URL is app-eu.logz.io, use `listener-eu.logz.io`. <br /> **Default**: `https://listener.logz.io:8071` |
+| **logzioSenderParameters.listenerUrl** | Listener URL. <br /> If you are not from the US see [Account region](https://docs.logz.io/user-guide/accounts/account-region.html#regions-and-urls) to get your Listner host.<br /> **Default**: `listener.logz.io` |
 | **logzioSenderParameters.accountToken** | **Required**. Your Logz.io [account token](https://app.logz.io/#/dashboard/settings/manage-accounts) |
+| **logzioSenderParameters.debug** | If `true` the sender will omit debug messages to the logger  |
 | **logzioSenderParameters.from-disk** | If `true`, metrics are stored on disk until they're shipped (see [If from-disk=true](#jolokia-if-fromdisk-true)). If `false`, metrics persist in memory until they're shipped (see [If from-disk=false](#jolokia-if-fromdisk-false)). <br /> **Default**: `true` |
 
 <h4 id="jolokia-if-fromdisk-true">If from-disk=true</h4>
@@ -68,7 +69,7 @@ For a complete list of options, see the configuration parameters below the code 
 
 | Parameter | Description |
 |---|---|
-| **logzioSenderParameters.in-memory-queue-capacity** | The amount of memory, in bytes, jmx2logzio can use for the memory queue. Set to `-1` for unlimited bytes. <br /> **Default**: `1024 * 1024 * 100` |
+| **logzioSenderParameters.inMemoryQueueCapacityInBytes** | The amount of memory, in bytes, Logzio-MSGraph can use for the memory queue. Set to `-1` for unlimited bytes. <br /> **Default**: `1024 * 1024 * 100` |
 | **logzioSenderParameters.log-count-limit** | The number of logs in the memory queue before dropping new logs. Default value is -1 (the sender will not limit the queue by logs count) <br /> **Default:** `-1` |
 
 
