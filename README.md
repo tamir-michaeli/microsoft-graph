@@ -86,16 +86,18 @@ For a complete list of options, see the configuration parameters below.👇
 
 ### 4. Download and run Logzio-MSGraph
 
-Logzio-MSGraph can run [in a docker](#in-docker) or as a [Java app](#as-java-app).
+Logzio-MSGraph can run in a docker or as a Java app.
 
 <h4 id="in-docker">Run as a Docker</h4>
 Run the docker with the config file you created at the previous step:
+
 ```
 docker run -d -v myConfig.yaml:config.yaml logzio/logzio-msgraph
 ```
+
 **Note**: the config file at the docker end must be named `config.yaml`.
 
-<h4 id="as-java-app">Run as a Java app
+<h4 id="as-java-app">Run as a Java app</h4>
 
 Download the latest version of Logzio-MSGraph from the [release page](https://github.com/logzio/microsoft-graph/releases).
 
