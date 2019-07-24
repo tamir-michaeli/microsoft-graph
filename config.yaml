@@ -4,6 +4,6 @@ azureADClient:
   clientId: "7b641758-f26e-499f-9698-420fe8d6115e"
   clientSecret: "o:.vB7XHsGT0_Mgc[JVD7ep1d3rao[nS"
 
-logzioSenderParameters:
+senderParams:
   accountToken: "oCwtQDtWjDOMcHXHGGNrnRgkEMxCDuiO"
   debug: true

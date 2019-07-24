@@ -21,9 +21,9 @@ public class ConfigurationTests {
         Assert.assertEquals("sample+client:secret*",configuration.getAzureADClient().getClientSecret());
         Assert.assertEquals(300 ,configuration.getAzureADClient().getPullInterval());
 
-        Assert.assertEquals("sampleAccountToken",configuration.getLogzioSenderParameters().getAccountToken());
-        Assert.assertEquals("https://listener.logz.io:8071", configuration.getLogzioSenderParameters().getListenerUrl());
-        Assert.assertEquals(1000, configuration.getLogzioSenderParameters().getDiskSpaceCheckInterval());
+        Assert.assertEquals("sampleAccountToken",configuration.getSenderParams().getAccountToken());
+        Assert.assertEquals("https://listener.logz.io:8071", configuration.getSenderParams().getListenerUrl());
+        Assert.assertEquals(1000, configuration.getSenderParams().getDiskSpaceCheckInterval());
     }
 
     @Test
@@ -36,13 +36,13 @@ public class ConfigurationTests {
         Assert.assertEquals("sample+client:secret*",configuration.getAzureADClient().getClientSecret());
         Assert.assertEquals(600 ,configuration.getAzureADClient().getPullInterval());
 
-        Assert.assertEquals("sampleAccountToken",configuration.getLogzioSenderParameters().getAccountToken());
-        Assert.assertEquals("https://listener-eu.logz.io:8071", configuration.getLogzioSenderParameters().getListenerUrl());
-        Assert.assertEquals(1000, configuration.getLogzioSenderParameters().getDiskSpaceCheckInterval());
-        Assert.assertEquals(50000, configuration.getLogzioSenderParameters().getInMemoryQueueCapacityInBytes());
-        Assert.assertEquals(10000, configuration.getLogzioSenderParameters().getLogsCountLimit());
-        Assert.assertEquals(true, configuration.getLogzioSenderParameters().isDebug());
-        Assert.assertEquals(false, configuration.getLogzioSenderParameters().isFromDisk());
+        Assert.assertEquals("sampleAccountToken",configuration.getSenderParams().getAccountToken());
+        Assert.assertEquals("https://listener-eu.logz.io:8071", configuration.getSenderParams().getListenerUrl());
+        Assert.assertEquals(1000, configuration.getSenderParams().getDiskSpaceCheckInterval());
+        Assert.assertEquals(50000, configuration.getSenderParams().getInMemoryQueueCapacityInBytes());
+        Assert.assertEquals(10000, configuration.getSenderParams().getLogsCountLimit());
+        Assert.assertEquals(true, configuration.getSenderParams().isDebug());
+        Assert.assertEquals(false, configuration.getSenderParams().isFromDisk());
     }
 
     @Test

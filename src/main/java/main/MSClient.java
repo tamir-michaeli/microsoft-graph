@@ -9,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.introspector.MissingProperty;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.representer.Representer;
 
 import javax.naming.AuthenticationException;
 import java.io.File;
@@ -46,7 +43,7 @@ public class MSClient {
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(officeApis::getSignIns);
         requests.add(officeApis::getDirectoryAudits);
-        FetchSendManager manager = new FetchSendManager(requests, configuration.getLogzioSenderParameters(), configuration.getAzureADClient().getPullInterval());
+        FetchSendManager manager = new FetchSendManager(requests, configuration.getSenderParams(), configuration.getAzureADClient().getPullInterval());
         manager.start();
     }
 
@@ -59,7 +56,7 @@ public class MSClient {
         InputStream inputStream = new FileInputStream(new File(yamlFile));
         MSGraphConfiguration config = yaml.load(inputStream);
 
-        if (config.getLogzioSenderParameters().getAccountToken() == null
+        if (config.getSenderParams().getAccountToken() == null
             || config.getAzureADClient().getTenantId() == null
             || config.getAzureADClient().getClientId() == null
             || config.getAzureADClient().getClientSecret() == null) {

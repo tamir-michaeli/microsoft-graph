@@ -4,7 +4,7 @@ public class MSGraphConfiguration {
 
 
     private AzureADClient azureADClient;
-    private LogzioJavaSenderParams logzioSenderParameters;
+    private LogzioJavaSenderParams senderParams;
 
     public MSGraphConfiguration() {
     }
@@ -17,11 +17,11 @@ public class MSGraphConfiguration {
         return azureADClient;
     }
 
-    public LogzioJavaSenderParams getLogzioSenderParameters() {
-        return logzioSenderParameters;
+    public LogzioJavaSenderParams getSenderParams() {
+        return senderParams;
     }
 
-    public void setLogzioSenderParameters(LogzioJavaSenderParams logzioSenderParameters) {
-        this.logzioSenderParameters = logzioSenderParameters;
+    public void setSenderParams(LogzioJavaSenderParams senderParams) {
+        this.senderParams = senderParams;
     }
 }
