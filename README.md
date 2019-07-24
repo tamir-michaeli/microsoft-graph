@@ -92,7 +92,7 @@ Logzio-MSGraph can run in a docker or as a Java app.
 Run the docker with the config file you created at the previous step:
 
 ```
-docker run -d -v myConfig.yaml:config.yaml logzio/logzio-msgraph
+docker run -d -v $(pwd)/myConfig.yaml:/config.yaml logzio/logzio-msgraph
 ```
 
 **Note**: the config file at the docker end must be named `config.yaml`.
