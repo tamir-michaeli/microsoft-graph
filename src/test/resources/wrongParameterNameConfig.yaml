@@ -3,5 +3,5 @@ azureADClient:
   clientId: "sample-client-id"
   clientSecret: "sample+client:secret*"
 
-logzioSenderParameters:
+senderParams:
   accountToken: "sampleAccountToken"

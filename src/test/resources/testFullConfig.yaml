@@ -4,7 +4,7 @@ azureADClient:
   clientSecret: "sample+client:secret*"
   pullInterval: 600
 
-logzioSenderParameters:
+senderParams:
   accountToken: "sampleAccountToken"
   listenerUrl: "listener-eu.logz.io"
   debug: true
