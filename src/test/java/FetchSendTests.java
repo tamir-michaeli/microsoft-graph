@@ -92,14 +92,13 @@ public class FetchSendTests {
                     String content = FileUtils.readFileToString(signinsFile, "utf-8");
                     JSONTokener tokener = new JSONTokener(content);
                     JSONObject object = new JSONObject(tokener);
-                    return object.getJSONArray("value"); //(JSONArray) obj.get("value");
+                    return object.getJSONArray("value");
                 } catch (JSONException | IOException e) {
                     e.printStackTrace();
                 }
                 return null;
             }
         });
-        System.out.println(requests.get(0).getData().toString());
 
         FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
         manager.start();
