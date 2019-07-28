@@ -15,6 +15,7 @@ import utils.HangupInterceptor;
 import utils.Shutdownable;
 import utils.StatusReporterFactory;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -40,6 +41,10 @@ public class FetchSendManager implements Shutdownable {
     public FetchSendManager(ArrayList<JsonArrayRequest> dataRequests, LogzioJavaSenderParams senderParams, int interval) {
         this.taskScheduler = Executors.newSingleThreadScheduledExecutor();
         this.logzioSenderParams = senderParams;
+        String queuePath = System.getProperty("user.dir");
+        queuePath += queuePath.endsWith("/") ? "" : "/";
+        queuePath += "testDir";
+        this.logzioSenderParams.setQueueDir(new File(queuePath));
         this.dataRequests = dataRequests;
         this.sender = getLogzioSender();
         this.interval = interval;
@@ -67,16 +72,17 @@ public class FetchSendManager implements Shutdownable {
                                 dataResult.setRequestDataResult(request.getResult());
                                 return dataResult.isSucceed();
                             });
-                    for (int i = 0; i < dataResult.getData().length(); i++) {
-                        try {
-                            byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(dataResult.getData().getJSONObject(i).toString()).array();
-                            sender.send(jsonAsBytes);
-                        } catch (JSONException e) {
-                            logger.error("error extracting json object from response: " + e.getMessage(), e);
-                        }
-                    }
                 } catch (ConditionTimeoutException e) {
-                    logger.error("All retries failed, ignoring request", e);
+                    logger.error("All retries failed, ignoring request");
+                    continue;
+                }
+            }
+            for (int i = 0; i < dataResult.getData().length(); i++) {
+                try {
+                    byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(dataResult.getData().getJSONObject(i).toString()).array();
+                    sender.send(jsonAsBytes);
+                } catch (JSONException e) {
+                    logger.error("error extracting json object from response: " + e.getMessage(), e);
                 }
             }
         }

@@ -5,7 +5,6 @@ import objects.LogzioJavaSenderParams;
 import objects.RequestDataResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
-import org.awaitility.core.ConditionTimeoutException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -118,7 +117,6 @@ public class FetchSendTests {
 
     @Test
     public void awaitAndRetryTest() throws InterruptedException, JSONException {
-
         int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
 
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
@@ -135,14 +133,17 @@ public class FetchSendTests {
 
 
     @Test
-    public void alwaysFalseRetryTest() throws InterruptedException, JSONException {
+    public void alwaysFalseRetryTest() throws InterruptedException {
+        int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
+
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(this::getAlwaysFalseStatus);
         FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
         manager.start();
-        org.testng.Assert.assertThrows(ConditionTimeoutException.class, () -> {
-            manager.pullAndSendData();
-        });
+        manager.pullAndSendData();
+        Thread.sleep(2000);
+        HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+        Assert.assertEquals(initialRequestsLength, recordedRequests.length);
     }
 
     private RequestDataResult getResultAfter2Retries() {
