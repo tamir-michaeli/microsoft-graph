@@ -2,6 +2,7 @@ import api.MSGraphRequestExecutor;
 import main.FetchSendManager;
 import objects.JsonArrayRequest;
 import objects.LogzioJavaSenderParams;
+import objects.RequestDataResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -83,14 +84,14 @@ public class FetchSendTests {
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(new JsonArrayRequest() {
             @Override
-            public JSONArray getData() {
+            public RequestDataResult getResult() {
                 File signinsFile = new File(getClass().getClassLoader().getResource("sampleSignins.json").getFile());
 
                 try {
                     String content = FileUtils.readFileToString(signinsFile, "utf-8");
                     JSONTokener tokener = new JSONTokener(content);
                     JSONObject object = new JSONObject(tokener);
-                    return object.getJSONArray("value");
+                    return new RequestDataResult(object.getJSONArray("value"));
                 } catch (JSONException | IOException e) {
                     e.printStackTrace();
                 }
@@ -117,6 +118,5 @@ public class FetchSendTests {
         JSONArray jsonArray = requestExecutor.getAllPages("http://localhost:8070/chainRequest");
         Assert.assertEquals(3, jsonArray.length());
     }
-
 
 }

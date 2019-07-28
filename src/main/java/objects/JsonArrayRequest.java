@@ -1,7 +1,5 @@
 package objects;
 
-import org.json.JSONArray;
-
 public interface JsonArrayRequest {
-    public JSONArray getData();
+    public RequestDataResult getResult();
 }

@@ -162,6 +162,12 @@
             <version>1.7.26</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>3.1.6</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 
