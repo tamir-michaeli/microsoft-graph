@@ -3,6 +3,7 @@ import main.FetchSendManager;
 import objects.JsonArrayRequest;
 import objects.LogzioJavaSenderParams;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,8 +15,6 @@ import org.junit.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.naming.AuthenticationException;
 import java.io.File;
@@ -28,7 +27,7 @@ import static org.mockserver.model.HttpResponse.response;
 
 public class FetchSendTests {
 
-    private static final Logger logger = LoggerFactory.getLogger(FetchSendTests.class.getName());
+    private static final Logger logger = Logger.getLogger(FetchSendTests.class);
 
     private static MockServerClient mockServerClient = null;
     private static ClientAndServer mockServer;
@@ -71,7 +70,6 @@ public class FetchSendTests {
     public static void setup() {
         senderParams.setFullListenerUrl("http://127.0.0.1:8070");
         senderParams.setAccountToken("not-a-real-token");
-        senderParams.setDebug(true);
         senderParams.setSenderDrainIntervals(1);
     }
 

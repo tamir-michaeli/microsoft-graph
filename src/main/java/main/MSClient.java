@@ -5,8 +5,8 @@ import api.Office365Apis;
 import objects.JsonArrayRequest;
 import objects.MSGraphConfiguration;
 import objects.MissingParameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -19,11 +19,13 @@ import java.util.ArrayList;
 
 public class MSClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(MSClient.class.getName());
+    private static final Logger logger = Logger.getLogger(MSClient.class);
     private MSGraphConfiguration configuration;
 
     public MSClient(String configFile) throws FileNotFoundException {
         configuration = loadMSGraphConfig(configFile);
+        org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
+        root.setLevel(Level.toLevel(configuration.getLogLevel()));
     }
 
     public void start() {
@@ -60,11 +62,11 @@ public class MSClient {
             || config.getAzureADClient().getTenantId() == null
             || config.getAzureADClient().getClientId() == null
             || config.getAzureADClient().getClientSecret() == null) {
-            throw new MissingParameter("The following parameters are mandatory: \n" +
-                    "azureADClient.tenantId, \n" +
-                    "azureADClient.clientId,\n" +
-                    "azureADClient.clientSecret,\n" +
-                    "logzioSenderParameters.accountToken");
+                throw new MissingParameter("The following parameters are mandatory: \n" +
+                        "azureADClient.tenantId, \n" +
+                        "azureADClient.clientId,\n" +
+                        "azureADClient.clientSecret,\n" +
+                        "logzioSenderParameters.accountToken");
         }
         return config;
     }

@@ -11,10 +11,9 @@ public class LogzioJavaSenderParams {
     private String type = "Microsoft-Graph";
     private String accountToken;
     private int threadPoolSize = 3;
-    private boolean debug = false;
     private boolean compressRequests = true;
     private boolean fromDisk = true;
-    private int senderDrainIntervals = 5;
+    private int senderDrainIntervals = 30;
 
     // In-memory queue parameters
     private int inMemoryQueueCapacityInBytes = 1024 * 1024 * 100;
@@ -60,14 +59,6 @@ public class LogzioJavaSenderParams {
 
     public int getThreadPoolSize() {
         return threadPoolSize;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
     }
 
     public boolean isCompressRequests() {

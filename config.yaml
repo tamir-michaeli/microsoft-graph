@@ -6,4 +6,3 @@ azureADClient:
 
 senderParams:
   accountToken: "<<ACCOUNT_TOKEN>>"
-  debug: true

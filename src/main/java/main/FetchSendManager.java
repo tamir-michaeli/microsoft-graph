@@ -6,13 +6,12 @@ import io.logz.sender.SenderStatusReporter;
 import io.logz.sender.exceptions.LogzioParameterErrorException;
 import objects.JsonArrayRequest;
 import objects.LogzioJavaSenderParams;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
 import utils.HangupInterceptor;
 import utils.Shutdownable;
 import utils.StatusReporterFactory;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FetchSendManager implements Shutdownable {
 
-    private static final Logger logger = LoggerFactory.getLogger(FetchSendManager.class.getName());
+    private static final Logger logger = Logger.getLogger(FetchSendManager.class);
     private static final int NO_DELAY = 0;
 
     private final ScheduledExecutorService taskScheduler;
@@ -56,7 +55,7 @@ public class FetchSendManager implements Shutdownable {
                     byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(result.getJSONObject(i).toString()).array();
                     sender.send(jsonAsBytes);
                 } catch (JSONException e) {
-                    logger.error("error extracting json object from response: {}", e.getMessage(), e);
+                    logger.error("error extracting json object from response: " + e.getMessage(), e);
                 }
             }
         }
@@ -80,7 +79,7 @@ public class FetchSendManager implements Shutdownable {
             senderBuilder.setTasksExecutor(senderExecutors);
             senderBuilder.setReporter(statusReporter);
             senderBuilder.setHttpsRequestConfiguration(requestConf);
-            senderBuilder.setDebug(logzioSenderParams.isDebug());
+            senderBuilder.setDebug(logger.isDebugEnabled());
             senderBuilder.setDrainTimeoutSec(logzioSenderParams.getSenderDrainIntervals());
 
             if (logzioSenderParams.isFromDisk()) {
@@ -99,7 +98,7 @@ public class FetchSendManager implements Shutdownable {
 
             return senderBuilder.build();
         } catch (LogzioParameterErrorException e) {
-            logger.error("problem in one or more parameters with error {}", e.getMessage(), e);
+            logger.error("problem in one or more parameters with error " + e.getMessage(), e);
         }
         return null;
     }

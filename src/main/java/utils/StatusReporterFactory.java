@@ -1,7 +1,7 @@
 package utils;
 
 import io.logz.sender.SenderStatusReporter;
-import org.slf4j.Logger;
+import org.apache.log4j.Logger;
 
 public class StatusReporterFactory {
     public static SenderStatusReporter newSenderStatusReporter(final Logger logger) {

@@ -2,10 +2,9 @@ package api;
 
 import objects.AzureADClient;
 import org.apache.http.HttpException;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.Authornicator;
 
 import javax.naming.AuthenticationException;
@@ -20,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 public class AuthorizationManager implements Authornicator {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class.getName());
+    private static final Logger logger = Logger.getLogger(AuthorizationManager.class);
 
     private static final String MICROSOFTONLINE_ADDRESS = "https://login.microsoftonline.com/";
     private static final String MICROSOFT_GRAPH = "https://graph.microsoft.com/.default";
@@ -103,7 +102,7 @@ public class AuthorizationManager implements Authornicator {
             }
 
         } catch (IOException | JSONException | HttpException e) {
-            logger.error("Error fetching access token: {}", e.getMessage(), e);
+            logger.error("Error fetching access token: " + e.getMessage(), e);
         }
         return false;
     }

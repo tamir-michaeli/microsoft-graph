@@ -1,12 +1,11 @@
 package utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 /**
  * A class for intercepting the hang up signal and do a graceful shutdown of the Camel.
  */
 public final class HangupInterceptor extends Thread {
-    private Logger logger = LoggerFactory.getLogger(HangupInterceptor.class);
+    private static Logger logger = Logger.getLogger(HangupInterceptor.class);
     private Shutdownable main;
 
     public HangupInterceptor(Shutdownable main) {

@@ -4,11 +4,10 @@ import objects.AzureADClient;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.Authornicator;
 
 import javax.naming.AuthenticationException;
@@ -19,7 +18,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class MSGraphRequestExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(MSGraphRequestExecutor.class.getName());
+    private static final Logger logger = Logger.getLogger(MSGraphRequestExecutor.class);
     public static final String API_ULR = "https://graph.microsoft.com/v1.0/";
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";

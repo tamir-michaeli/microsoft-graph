@@ -36,13 +36,14 @@ public class ConfigurationTests {
         Assert.assertEquals("sample+client:secret*",configuration.getAzureADClient().getClientSecret());
         Assert.assertEquals(600 ,configuration.getAzureADClient().getPullInterval());
 
+
         Assert.assertEquals("sampleAccountToken",configuration.getSenderParams().getAccountToken());
         Assert.assertEquals("https://listener-eu.logz.io:8071", configuration.getSenderParams().getListenerUrl());
         Assert.assertEquals(1000, configuration.getSenderParams().getDiskSpaceCheckInterval());
         Assert.assertEquals(50000, configuration.getSenderParams().getInMemoryQueueCapacityInBytes());
         Assert.assertEquals(10000, configuration.getSenderParams().getLogsCountLimit());
-        Assert.assertEquals(true, configuration.getSenderParams().isDebug());
-        Assert.assertEquals(false, configuration.getSenderParams().isFromDisk());
+        Assert.assertEquals("DEBUG", configuration.getLogLevel());
+        Assert.assertFalse(configuration.getSenderParams().isFromDisk());
     }
 
     @Test

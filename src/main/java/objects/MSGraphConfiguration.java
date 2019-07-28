@@ -5,6 +5,7 @@ public class MSGraphConfiguration {
 
     private AzureADClient azureADClient;
     private LogzioJavaSenderParams senderParams;
+    private String logLevel = "INFO";
 
     public MSGraphConfiguration() {
     }
@@ -23,5 +24,13 @@ public class MSGraphConfiguration {
 
     public void setSenderParams(LogzioJavaSenderParams senderParams) {
         this.senderParams = senderParams;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
     }
 }

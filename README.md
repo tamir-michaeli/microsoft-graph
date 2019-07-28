@@ -64,9 +64,8 @@ For a complete list of options, see the configuration parameters below.👇
 |---|---|
 | **senderParams.listenerUrl** | Listener URL. <br /> If you are not from the US see [Account region](https://docs.logz.io/user-guide/accounts/account-region.html#regions-and-urls) to get your Listner host.<br /> **Default**: `listener.logz.io` |
 | **senderParams.accountToken** | **Required**. Your Logz.io [account token](https://app.logz.io/#/dashboard/settings/manage-accounts) |
-| **senderParams.debug** | If `true` the sender will omit debug messages to the logger  |
 | **senderParams.fromDisk** | If `true`, logs are stored on disk until they're shipped (see [If from-disk=true](#if-fromdisk-true)). If `false`, logs persist in memory until they're shipped (see [If from-disk=false](#if-fromdisk-false)). <br /> **Default**: `true` |
-| **senderParams.senderDrainIntervals** | How often the sender should drain the queue (in seconds). <br /> **Default**: `5` |
+| **senderParams.senderDrainIntervals** | How often the sender should drain the queue (in seconds). <br /> **Default**: `30` |
 
 <h4 id="if-fromdisk-true">If from-disk=true</h4>
 
@@ -83,6 +82,11 @@ For a complete list of options, see the configuration parameters below.👇
 | **senderParams.inMemoryQueueCapacityInBytes** | The amount of memory, in bytes, Logzio-MSGraph can use for the memory queue. Set to `-1` for unlimited bytes. <br /> **Default**: `1024 * 1024 * 100` |
 | **senderParams.logsCountLimit** | The number of logs in the memory queue before dropping new logs. Default value is -1 (the sender will not limit the queue by logs count) <br /> **Default:** `-1` |
 
+### Other parameters
+
+| Parameter | Description |
+|---|---|
+| **logLevel** | Log level for Logizo-MSGraph to omit. </br> Can be one of: `OFF`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`, `ALL`. <br /> **Default**: `INFO`. |
 
 ### 4. Download and run Logzio-MSGraph
 
