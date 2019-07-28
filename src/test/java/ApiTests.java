@@ -30,7 +30,7 @@ public class ApiTests {
     public void accessTokenRequestTest() throws InterruptedException, UnsupportedEncodingException {
         AzureADClient client = getSampleAzureADClient();
         mockWebServer.enqueue(new MockResponse());
-            Assert.assertThrows(AuthenticationException.class, () -> {
+        Assert.assertThrows(AuthenticationException.class, () -> {
             AuthorizationManager manager = new AuthorizationManager(client,"http://localhost:8123");
         });
         RecordedRequest request = mockWebServer.takeRequest();

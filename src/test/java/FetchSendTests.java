@@ -4,7 +4,8 @@ import objects.JsonArrayRequest;
 import objects.LogzioJavaSenderParams;
 import objects.RequestDataResult;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+import org.awaitility.core.ConditionTimeoutException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +17,8 @@ import org.junit.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.AuthenticationException;
 import java.io.File;
@@ -28,15 +31,17 @@ import static org.mockserver.model.HttpResponse.response;
 
 public class FetchSendTests {
 
-    private static final Logger logger = Logger.getLogger(FetchSendTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(FetchSendTests.class.getName());
 
     private static MockServerClient mockServerClient = null;
     private static ClientAndServer mockServer;
     private static LogzioJavaSenderParams senderParams = new LogzioJavaSenderParams();
 
+    private int retries = 0;
 
     @BeforeClass
     public static void startMockServer() throws JSONException {
+        BasicConfigurator.configure();
         logger.info("starting mock server");
         JSONObject requestResponseBody = new JSONObject();
         requestResponseBody.put("@odata.nextLink", "http://localhost:8070/nextlink1");
@@ -48,7 +53,6 @@ public class FetchSendTests {
 
         JSONObject link2ResponseBody = new JSONObject();
         link2ResponseBody.put("value", new JSONArray("[{\"key\":3}]"));
-
 
         mockServer = startClientAndServer(8070);
 
@@ -81,6 +85,7 @@ public class FetchSendTests {
 
     @Test
     public void FetchSendTest() throws InterruptedException, JSONException {
+        int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
         requests.add(new JsonArrayRequest() {
             @Override
@@ -104,11 +109,63 @@ public class FetchSendTests {
         manager.pullAndSendData();
         Thread.sleep(2000);
         HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
-        Assert.assertEquals(1, recordedRequests.length);
-        JSONObject jsonObject = new JSONObject(recordedRequests[0].getBodyAsString());
+        Assert.assertEquals(initialRequestsLength + 1, recordedRequests.length);
+        JSONObject jsonObject = new JSONObject(recordedRequests[initialRequestsLength].getBodyAsString());
         Assert.assertEquals("aaaaa-bbbb-cccc-dddd-123456789", jsonObject.getString("id"));
         Assert.assertEquals("John Smith", jsonObject.getString("userDisplayName"));
         Assert.assertEquals("john.s@gmail.com", jsonObject.getString("userPrincipalName"));
+    }
+
+    @Test
+    public void awaitAndRetryTest() throws InterruptedException, JSONException {
+
+        int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
+
+        ArrayList<JsonArrayRequest> requests = new ArrayList<>();
+        requests.add(this::getResultAfter2Retries);
+        FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
+        manager.start();
+        manager.pullAndSendData();
+        Thread.sleep(2000);
+        HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+        Assert.assertEquals(initialRequestsLength + 1, recordedRequests.length);
+        JSONObject jsonObject = new JSONObject(recordedRequests[initialRequestsLength].getBodyAsString());
+        Assert.assertEquals(1, jsonObject.getInt("key"));
+    }
+
+
+    @Test
+    public void alwaysFalseRetryTest() throws InterruptedException, JSONException {
+        ArrayList<JsonArrayRequest> requests = new ArrayList<>();
+        requests.add(this::getAlwaysFalseStatus);
+        FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
+        manager.start();
+        org.testng.Assert.assertThrows(ConditionTimeoutException.class, () -> {
+            manager.pullAndSendData();
+        });
+    }
+
+    private RequestDataResult getResultAfter2Retries() {
+        if (retries < 2) {
+            retries++;
+            RequestDataResult result = new RequestDataResult();
+            result.setSucceed(false);
+            return result;
+        }
+        try {
+            JSONArray dataResult = new JSONArray("[{\"key\":1}]");
+            return  new RequestDataResult(dataResult);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return new RequestDataResult(new JSONArray());
+    }
+
+    private RequestDataResult getAlwaysFalseStatus() {
+        RequestDataResult result = new RequestDataResult();
+        result.setSucceed(false);
+        return result;
     }
 
     @Test

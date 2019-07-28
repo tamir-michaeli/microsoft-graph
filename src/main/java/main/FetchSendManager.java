@@ -9,7 +9,6 @@ import objects.LogzioJavaSenderParams;
 import objects.RequestDataResult;
 import org.apache.log4j.Logger;
 import org.awaitility.Awaitility;
-import org.json.JSONArray;
 import org.json.JSONException;
 import utils.HangupInterceptor;
 import utils.Shutdownable;
@@ -26,8 +25,8 @@ public class FetchSendManager implements Shutdownable {
 
     private static final Logger logger = Logger.getLogger(FetchSendManager.class);
     private static final int NO_DELAY = 0;
-    private static final int DEFAULT_POLLING_INTERVAL = 1;
-    private static final int DEFULAT_TIMEOUT_DURATION = 10;
+    private static final int DEFAULT_POLLING_INTERVAL = 3;
+    private static final int DEFAULT_TIMEOUT_DURATION = 12;
 
     private final ScheduledExecutorService taskScheduler;
     private final ArrayList<JsonArrayRequest> dataRequests;
@@ -54,23 +53,33 @@ public class FetchSendManager implements Shutdownable {
 
     public void pullAndSendData() {
         for (JsonArrayRequest request : dataRequests) {
-            RequestDataResult dataResult = new RequestDataResult();
-            Awaitility.with()
-                    .pollInterval(DEFAULT_POLLING_INTERVAL,  SECONDS)
-                    .atMost(DEFULAT_TIMEOUT_DURATION, SECONDS)
-                    .await()
-                    .until(() -> {
-                        dataResult.setRequestDataResult(request.getResult());
-                        return  dataResult.isSucceed();
-                    });
-            for (int i = 0; i < dataResult.getData().length(); i++) {
-                try {
-                    byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(dataResult.getData().getJSONObject(i).toString()).array();
-                    sender.send(jsonAsBytes);
-                } catch (JSONException e) {
-                    logger.error("error extracting json object from response: " + e.getMessage(), e);
-                }
+            RequestDataResult dataResult = request.getResult();
+            if (!dataResult.isSucceed()) {
+                Awaitility.with()
+                        .pollDelay(DEFAULT_POLLING_INTERVAL, SECONDS)
+                        .pollInterval(DEFAULT_POLLING_INTERVAL,  SECONDS)
+                        .atMost(DEFAULT_TIMEOUT_DURATION, SECONDS)
+                        .await()
+                        .until(() -> {
+                            logger.warn("Couldn't complete the request, retrying..");
+                            dataResult.setRequestDataResult(request.getResult());
+                            return  dataResult.isSucceed();
+                        });
             }
+
+            if (dataResult.isSucceed()) {
+                for (int i = 0; i < dataResult.getData().length(); i++) {
+                    try {
+                        byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(dataResult.getData().getJSONObject(i).toString()).array();
+                        sender.send(jsonAsBytes);
+                    } catch (JSONException e) {
+                        logger.error("error extracting json object from response: " + e.getMessage(), e);
+                    }
+                }
+            } else {
+                logger.error("All retries failed, ignoring request");
+            }
+
         }
     }
 
