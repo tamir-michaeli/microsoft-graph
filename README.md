@@ -34,7 +34,7 @@ Click on `Add a permission`.
 
 Select `Microsoft Graph` >> `Application permissions`.
 
-Check `AuditLog.Read.All` under `AuditLog`.
+Check `AuditLog.Read.All` under `AuditLog`, and `Directory.Read.All` under `Directory`.
 
 Click on `Add permissions`.
 
