@@ -9,6 +9,7 @@ import objects.LogzioJavaSenderParams;
 import objects.RequestDataResult;
 import org.apache.log4j.Logger;
 import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
 import org.json.JSONException;
 import utils.HangupInterceptor;
 import utils.Shutdownable;
@@ -55,31 +56,29 @@ public class FetchSendManager implements Shutdownable {
         for (JsonArrayRequest request : dataRequests) {
             RequestDataResult dataResult = request.getResult();
             if (!dataResult.isSucceed()) {
-                Awaitility.with()
-                        .pollDelay(DEFAULT_POLLING_INTERVAL, SECONDS)
-                        .pollInterval(DEFAULT_POLLING_INTERVAL,  SECONDS)
-                        .atMost(DEFAULT_TIMEOUT_DURATION, SECONDS)
-                        .await()
-                        .until(() -> {
-                            logger.warn("Couldn't complete the request, retrying..");
-                            dataResult.setRequestDataResult(request.getResult());
-                            return  dataResult.isSucceed();
-                        });
-            }
-
-            if (dataResult.isSucceed()) {
-                for (int i = 0; i < dataResult.getData().length(); i++) {
-                    try {
-                        byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(dataResult.getData().getJSONObject(i).toString()).array();
-                        sender.send(jsonAsBytes);
-                    } catch (JSONException e) {
-                        logger.error("error extracting json object from response: " + e.getMessage(), e);
+                try {
+                    Awaitility.with()
+                            .pollDelay(DEFAULT_POLLING_INTERVAL, SECONDS)
+                            .pollInterval(DEFAULT_POLLING_INTERVAL, SECONDS)
+                            .atMost(DEFAULT_TIMEOUT_DURATION, SECONDS)
+                            .await()
+                            .until(() -> {
+                                logger.warn("Couldn't complete the request, retrying..");
+                                dataResult.setRequestDataResult(request.getResult());
+                                return dataResult.isSucceed();
+                            });
+                    for (int i = 0; i < dataResult.getData().length(); i++) {
+                        try {
+                            byte[] jsonAsBytes = StandardCharsets.UTF_8.encode(dataResult.getData().getJSONObject(i).toString()).array();
+                            sender.send(jsonAsBytes);
+                        } catch (JSONException e) {
+                            logger.error("error extracting json object from response: " + e.getMessage(), e);
+                        }
                     }
+                } catch (ConditionTimeoutException e) {
+                    logger.error("All retries failed, ignoring request", e);
                 }
-            } else {
-                logger.error("All retries failed, ignoring request");
             }
-
         }
     }
 
