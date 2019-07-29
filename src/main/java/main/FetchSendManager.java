@@ -41,10 +41,6 @@ public class FetchSendManager implements Shutdownable {
     public FetchSendManager(ArrayList<JsonArrayRequest> dataRequests, LogzioJavaSenderParams senderParams, int interval) {
         this.taskScheduler = Executors.newSingleThreadScheduledExecutor();
         this.logzioSenderParams = senderParams;
-        String queuePath = System.getProperty("user.dir");
-        queuePath += queuePath.endsWith("/") ? "" : "/";
-        queuePath += "testDir";
-        this.logzioSenderParams.setQueueDir(new File(queuePath));
         this.dataRequests = dataRequests;
         this.sender = getLogzioSender();
         this.interval = interval;

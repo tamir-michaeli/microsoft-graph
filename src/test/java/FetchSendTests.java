@@ -9,10 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
@@ -21,7 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.AuthenticationException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -37,6 +37,7 @@ public class FetchSendTests {
     private static LogzioJavaSenderParams senderParams = new LogzioJavaSenderParams();
 
     private int retries = 0;
+    private static Path tempDir;
 
     @BeforeClass
     public static void startMockServer() throws JSONException {
@@ -71,10 +72,23 @@ public class FetchSendTests {
     }
 
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException {
         senderParams.setFullListenerUrl("http://127.0.0.1:8070");
         senderParams.setAccountToken("not-a-real-token");
         senderParams.setSenderDrainIntervals(1);
+        tempDir = Files.createTempDirectory(null);
+        senderParams.setQueueDir(tempDir.toFile());
+    }
+
+    @After
+    public void clean() throws IOException {
+        try {
+            tempDir.toFile().delete();
+            tempDir = Files.createTempDirectory(null);
+        } catch (FileNotFoundException e) {
+
+        }
+
     }
 
     @AfterClass
@@ -113,6 +127,7 @@ public class FetchSendTests {
         Assert.assertEquals("aaaaa-bbbb-cccc-dddd-123456789", jsonObject.getString("id"));
         Assert.assertEquals("John Smith", jsonObject.getString("userDisplayName"));
         Assert.assertEquals("john.s@gmail.com", jsonObject.getString("userPrincipalName"));
+        manager.shutdown();
     }
 
     @Test
@@ -129,6 +144,8 @@ public class FetchSendTests {
         Assert.assertEquals(initialRequestsLength + 1, recordedRequests.length);
         JSONObject jsonObject = new JSONObject(recordedRequests[initialRequestsLength].getBodyAsString());
         Assert.assertEquals(1, jsonObject.getInt("key"));
+        manager.shutdown();
+
     }
 
 
@@ -144,6 +161,8 @@ public class FetchSendTests {
         Thread.sleep(2000);
         HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
         Assert.assertEquals(initialRequestsLength, recordedRequests.length);
+        manager.shutdown();
+
     }
 
     private RequestDataResult getResultAfter2Retries() {
