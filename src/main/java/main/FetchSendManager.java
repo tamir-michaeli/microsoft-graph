@@ -15,7 +15,6 @@ import utils.HangupInterceptor;
 import utils.Shutdownable;
 import utils.StatusReporterFactory;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -28,7 +27,8 @@ public class FetchSendManager implements Shutdownable {
     private static final Logger logger = Logger.getLogger(FetchSendManager.class);
     private static final int NO_DELAY = 0;
     private static final int DEFAULT_POLLING_INTERVAL = 3;
-    private static final int DEFAULT_TIMEOUT_DURATION = 12;
+    private static final int RETRY_TIMEOUT_DURATION_SEC = 60;
+    private static final int TERMINATION_TIMEOUT_SEC = 20;
 
     private final ScheduledExecutorService taskScheduler;
     private final ArrayList<JsonArrayRequest> dataRequests;
@@ -61,7 +61,7 @@ public class FetchSendManager implements Shutdownable {
                     Awaitility.with()
                             .pollDelay(DEFAULT_POLLING_INTERVAL, SECONDS)
                             .pollInterval(DEFAULT_POLLING_INTERVAL, SECONDS)
-                            .atMost(DEFAULT_TIMEOUT_DURATION, SECONDS)
+                            .atMost(RETRY_TIMEOUT_DURATION_SEC, SECONDS)
                             .await()
                             .until(() -> {
                                 logger.warn("Couldn't complete the request, retrying..");
@@ -136,13 +136,13 @@ public class FetchSendManager implements Shutdownable {
         logger.info("requesting data fetcher to stop");
         try {
             taskScheduler.shutdown();
-            if (!taskScheduler.awaitTermination(20, SECONDS)) {
+            if (!taskScheduler.awaitTermination(TERMINATION_TIMEOUT_SEC, SECONDS)) {
                 taskScheduler.shutdownNow();
             }
             logger.info("stopping data sender");
             sender.stop();
             senderExecutors.shutdown();
-            if (!senderExecutors.awaitTermination(20, SECONDS)) {
+            if (!senderExecutors.awaitTermination(TERMINATION_TIMEOUT_SEC, SECONDS)) {
                 senderExecutors.shutdownNow();
             }
         } catch (InterruptedException e) {

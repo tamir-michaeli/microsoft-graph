@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class MSGraphRequestExecutor {
     private static final Logger logger = Logger.getLogger(MSGraphRequestExecutor.class);
@@ -32,6 +33,7 @@ public class MSGraphRequestExecutor {
     private static final String GREATER_OR_EQUEAL = " ge ";
     private static final String JSON_ERROR = "error";
     private static final String JSON_MESSAGE = "message";
+    private static final int DEFAULT_READ_TIMEOUT_SEC = 20;
 
     private final Authornicator auth;
     private final int interval; // in millis
@@ -47,7 +49,9 @@ public class MSGraphRequestExecutor {
     }
 
     private Response executeRequest(String url) throws IOException, AuthenticationException {
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(DEFAULT_READ_TIMEOUT_SEC, TimeUnit.SECONDS)
+                .build();
         String accessToken = auth.getAccessToken();
         if (accessToken == null) {
             throw new AuthenticationException("couldn't get access token, will try at the next pull");

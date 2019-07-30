@@ -29,7 +29,7 @@ public class Office365Apis {
             dataResult.setData(requestExecutor.getAllPages(API_ULR + AD_SINGINS + requestExecutor.timeFilterSuffix(CREATED_DATE_TIME_FIELD)));
             return dataResult;
         } catch (IOException | JSONException e) {
-            logger.error("error parsing response: " + e.getMessage(), e);
+            logger.warn("error parsing response: " + e.getMessage(), e);
         } catch (AuthenticationException e) {
             logger.error(e.getMessage(), e);
         }
@@ -43,7 +43,7 @@ public class Office365Apis {
             dataResult.setData(requestExecutor.getAllPages(API_ULR + AD_DIRECTORY_AUDITS + requestExecutor.timeFilterSuffix(ACTIVITY_DATE_TIME_FIELD)));
             return dataResult;
         } catch (IOException | JSONException e) {
-            logger.error("error parsing response: " + e.getMessage(), e);
+            logger.warn("error parsing response: " + e.getMessage(), e);
         } catch (AuthenticationException e) {
             logger.error(e.getMessage(), e);
         }
