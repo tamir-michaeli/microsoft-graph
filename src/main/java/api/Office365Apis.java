@@ -1,14 +1,11 @@
 package api;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.apache.log4j.Logger;
 import objects.RequestDataResult;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 import javax.naming.AuthenticationException;
 import java.io.IOException;
-
-import static api.MSGraphRequestExecutor.API_ULR;
 
 public class Office365Apis {
 
@@ -23,10 +20,10 @@ public class Office365Apis {
         this.requestExecutor = executor;
     }
 
-    public RequestDataResult getSignIns() {
+    private RequestDataResult office365request(String api, String dateField) {
         RequestDataResult dataResult = new RequestDataResult();
         try {
-            dataResult.setData(requestExecutor.getAllPages(API_ULR + AD_SINGINS + requestExecutor.timeFilterSuffix(CREATED_DATE_TIME_FIELD)));
+            dataResult.setData(requestExecutor.getAllPages(api, dateField));
             return dataResult;
         } catch (IOException | JSONException e) {
             logger.warn("error parsing response: " + e.getMessage(), e);
@@ -37,17 +34,11 @@ public class Office365Apis {
         return dataResult;
     }
 
+    public RequestDataResult getSignIns() {
+        return office365request(AD_SINGINS ,CREATED_DATE_TIME_FIELD);
+    }
+
     public RequestDataResult getDirectoryAudits() {
-        RequestDataResult dataResult = new RequestDataResult();
-        try {
-            dataResult.setData(requestExecutor.getAllPages(API_ULR + AD_DIRECTORY_AUDITS + requestExecutor.timeFilterSuffix(ACTIVITY_DATE_TIME_FIELD)));
-            return dataResult;
-        } catch (IOException | JSONException e) {
-            logger.warn("error parsing response: " + e.getMessage(), e);
-        } catch (AuthenticationException e) {
-            logger.error(e.getMessage(), e);
-        }
-        dataResult.setSucceed(false);
-        return dataResult;
+        return office365request(AD_DIRECTORY_AUDITS, ACTIVITY_DATE_TIME_FIELD);
     }
 }

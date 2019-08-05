@@ -4,7 +4,6 @@ import api.MSGraphRequestExecutor;
 import api.Office365Apis;
 import objects.JsonArrayRequest;
 import objects.MSGraphConfiguration;
-import objects.MissingParameter;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
@@ -16,6 +15,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+
+import static io.logz.sender.com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Arrays.asList;
 
 public class MSClient {
 
@@ -29,22 +31,20 @@ public class MSClient {
     }
 
     public void start() {
-
         if (getConfiguration() == null) {
             return;
         }
-        MSGraphRequestExecutor client;
+        MSGraphRequestExecutor executor;
         try {
-            client = new MSGraphRequestExecutor(configuration.getAzureADClient());
+            executor = new MSGraphRequestExecutor(configuration.getAzureADClient());
         } catch (AuthenticationException e) {
             logger.error(e.getMessage(), e);
             return;
         }
-        Office365Apis officeApis = new Office365Apis(client);
+        Office365Apis officeApis = new Office365Apis(executor);
 
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
-        requests.add(officeApis::getSignIns);
-        requests.add(officeApis::getDirectoryAudits);
+        requests.addAll(asList(officeApis::getSignIns,officeApis::getDirectoryAudits));
         FetchSendManager manager = new FetchSendManager(requests, configuration.getSenderParams(), configuration.getAzureADClient().getPullInterval());
         manager.start();
     }
@@ -58,11 +58,13 @@ public class MSClient {
         InputStream inputStream = new FileInputStream(new File(yamlFile));
         MSGraphConfiguration config = yaml.load(inputStream);
 
-        if (config.getSenderParams().getAccountToken() == null
-            || config.getAzureADClient().getTenantId() == null
-            || config.getAzureADClient().getClientId() == null
-            || config.getAzureADClient().getClientSecret() == null) {
-                throw new MissingParameter("The following parameters are mandatory: \n" +
+        try {
+            checkNotNull(config.getSenderParams().getAccountToken());
+            checkNotNull(config.getAzureADClient().getTenantId());
+            checkNotNull(config.getAzureADClient().getClientId());
+            checkNotNull(config.getAzureADClient().getClientSecret());
+        } catch (NullPointerException e) {
+            throw new NullPointerException("The following parameters are mandatory: \n" +
                         "azureADClient.tenantId, \n" +
                         "azureADClient.clientId,\n" +
                         "azureADClient.clientSecret,\n" +

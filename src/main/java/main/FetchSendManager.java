@@ -19,16 +19,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.pollinterval.FibonacciPollInterval.fibonacci;
 
 public class FetchSendManager implements Shutdownable {
-
     private static final Logger logger = Logger.getLogger(FetchSendManager.class);
     private static final int NO_DELAY = 0;
     private static final int DEFAULT_POLLING_INTERVAL = 3;
     private static final int RETRY_TIMEOUT_DURATION_SEC = 60;
     private static final int TERMINATION_TIMEOUT_SEC = 20;
+    private static final int FIBONACCI_OFFSET = 4;
 
     private final ScheduledExecutorService taskScheduler;
     private final ArrayList<JsonArrayRequest> dataRequests;
@@ -60,7 +62,7 @@ public class FetchSendManager implements Shutdownable {
                 try {
                     Awaitility.with()
                             .pollDelay(DEFAULT_POLLING_INTERVAL, SECONDS)
-                            .pollInterval(DEFAULT_POLLING_INTERVAL, SECONDS)
+                            .pollInterval(fibonacci(FIBONACCI_OFFSET,TimeUnit.SECONDS))
                             .atMost(RETRY_TIMEOUT_DURATION_SEC, SECONDS)
                             .await()
                             .until(() -> {
@@ -88,14 +90,7 @@ public class FetchSendManager implements Shutdownable {
 
         senderExecutors = Executors.newScheduledThreadPool(logzioSenderParams.getThreadPoolSize());
         try {
-            HttpsRequestConfiguration requestConf = HttpsRequestConfiguration
-                    .builder()
-                    .setLogzioListenerUrl(logzioSenderParams.getListenerUrl())
-                    .setLogzioType(logzioSenderParams.getType())
-                    .setLogzioToken(logzioSenderParams.getAccountToken())
-                    .setCompressRequests(logzioSenderParams.isCompressRequests())
-                    .build();
-
+            HttpsRequestConfiguration requestConf = getSenderRequestConfig();
             SenderStatusReporter statusReporter = StatusReporterFactory.newSenderStatusReporter(Logger.getLogger(LogzioJavaSenderParams.class));
             LogzioSender.Builder senderBuilder = LogzioSender
                     .builder();
@@ -104,26 +99,38 @@ public class FetchSendManager implements Shutdownable {
             senderBuilder.setHttpsRequestConfiguration(requestConf);
             senderBuilder.setDebug(logger.isDebugEnabled());
             senderBuilder.setDrainTimeoutSec(logzioSenderParams.getSenderDrainIntervals());
-
-            if (logzioSenderParams.isFromDisk()) {
-                senderBuilder.withDiskQueue()
-                        .setQueueDir(logzioSenderParams.getQueueDir())
-                        .setCheckDiskSpaceInterval(logzioSenderParams.getDiskSpaceCheckInterval())
-                        .setFsPercentThreshold(logzioSenderParams.getFileSystemFullPercentThreshold())
-                        .setGcPersistedQueueFilesIntervalSeconds(logzioSenderParams.getGcPersistedQueueFilesIntervalSeconds())
-                        .endDiskQueue();
-            } else {
-                senderBuilder.withInMemoryQueue()
-                        .setCapacityInBytes(logzioSenderParams.getInMemoryQueueCapacityInBytes())
-                        .setLogsCountLimit(logzioSenderParams.getLogsCountLimit())
-                        .endInMemoryQueue();
-            }
-
+            senderBuilder = logzioSenderParams.isFromDisk() ?  setFromDiskParams(senderBuilder) : setInMemoryParams(senderBuilder);
             return senderBuilder.build();
         } catch (LogzioParameterErrorException e) {
             logger.error("problem in one or more parameters with error " + e.getMessage(), e);
         }
         return null;
+    }
+
+    private HttpsRequestConfiguration getSenderRequestConfig() throws LogzioParameterErrorException {
+        return HttpsRequestConfiguration
+                .builder()
+                .setLogzioListenerUrl(logzioSenderParams.getListenerUrl())
+                .setLogzioType(logzioSenderParams.getType())
+                .setLogzioToken(logzioSenderParams.getAccountToken())
+                .setCompressRequests(logzioSenderParams.isCompressRequests())
+                .build();
+    }
+
+    private LogzioSender.Builder setInMemoryParams(LogzioSender.Builder senderBuilder) {
+       return senderBuilder.withInMemoryQueue()
+                .setCapacityInBytes(logzioSenderParams.getInMemoryQueueCapacityInBytes())
+                .setLogsCountLimit(logzioSenderParams.getLogsCountLimit())
+                .endInMemoryQueue();
+    }
+
+    private LogzioSender.Builder setFromDiskParams(LogzioSender.Builder senderBuilder) {
+         return senderBuilder.withDiskQueue()
+                .setQueueDir(logzioSenderParams.getQueueDir())
+                .setCheckDiskSpaceInterval(logzioSenderParams.getDiskSpaceCheckInterval())
+                .setFsPercentThreshold(logzioSenderParams.getFileSystemFullPercentThreshold())
+                .setGcPersistedQueueFilesIntervalSeconds(logzioSenderParams.getGcPersistedQueueFilesIntervalSeconds())
+                .endDiskQueue();
     }
 
     private void enableHangupSupport() {

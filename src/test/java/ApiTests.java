@@ -3,12 +3,12 @@ import objects.AzureADClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.apache.log4j.BasicConfigurator;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.naming.AuthenticationException;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -18,12 +18,8 @@ public class ApiTests {
     private static MockWebServer mockWebServer = new MockWebServer();
 
     @BeforeClass
-    public static void startMockServer() {
-        try {
-            mockWebServer.start(8123);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void setup() {
+        BasicConfigurator.configure();
     }
 
     @Test
@@ -31,7 +27,7 @@ public class ApiTests {
         AzureADClient client = getSampleAzureADClient();
         mockWebServer.enqueue(new MockResponse());
         Assert.assertThrows(AuthenticationException.class, () -> {
-            AuthorizationManager manager = new AuthorizationManager(client,"http://localhost:8123");
+            AuthorizationManager manager = new AuthorizationManager(client,"http://localhost:" + mockWebServer.getPort());
         });
         RecordedRequest request = mockWebServer.takeRequest();
         String body = request.getBody().readUtf8();

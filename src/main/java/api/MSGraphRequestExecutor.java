@@ -65,6 +65,10 @@ public class MSGraphRequestExecutor {
         return client.newCall(request).execute();
     }
 
+    public JSONArray getAllPages(String api, String timeField) throws IOException, JSONException, AuthenticationException {
+        return getAllPages(API_ULR + api + timeFilterSuffix(timeField));
+    }
+
     public JSONArray getAllPages(String url) throws IOException, JSONException, AuthenticationException {
         logger.debug("API URL: " + url);
         Response response = executeRequest(url);

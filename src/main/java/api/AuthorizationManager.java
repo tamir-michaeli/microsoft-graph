@@ -1,17 +1,13 @@
 package api;
 
 import objects.AzureADClient;
-import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Authornicator;
 
 import javax.naming.AuthenticationException;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -30,7 +26,7 @@ public class AuthorizationManager implements Authornicator {
     private static final String REQUEST_CONTENT_LENGTH = "Content-Length";
     private static final String JSON_ACCESS_TOKEN = "access_token";
     private static final String JSON_ACCESS_TOKEN_EXPIRE_DURATION = "expires_in";
-    private static final int ONE_MINUTES = 60 * 1000;
+    private static final int ONE_MINUTES_IN_MILLIS = 60 * 1000;
     private static final String GRANT_TYPE = "grant_type=";
     private static final String CLIENT_ID = "&client_id=";
     private static final String SCOPE = "&scope=";
@@ -52,58 +48,68 @@ public class AuthorizationManager implements Authornicator {
         this.clientId = client.getClientId();
         this.clientSecret = client.getClientSecret();
         this.apiUrl = url;
-        if (!retrieveToken()) {
-            throw new AuthenticationException("can't get access token, quiting..");
-        }
+        retrieveToken();
     }
 
     public String getAccessToken() {
-        if (System.currentTimeMillis() > currentTokenExpiry - ONE_MINUTES) { // 1 minutes safety
-            if (!retrieveToken()) {
+        if (System.currentTimeMillis() > currentTokenExpiry - ONE_MINUTES_IN_MILLIS) { // 1 minutes safety
+            try {
+               retrieveToken();
+
+            } catch (AuthenticationException e) {
+                logger.error("Error fetching access token: " + e);
                 return null;
             }
         }
         return accessToken;
     }
 
-    private boolean retrieveToken() {
+    private void retrieveToken() throws AuthenticationException {
         try {
-            String urlParameters = GRANT_TYPE + CLIENT_CREDENTIALS
-                    + CLIENT_ID + clientId
-                    + SCOPE + MICROSOFT_GRAPH
-                    + CLIENT_SECRET + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8.toString());
-            byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-            int postDataLength = postData.length;
-
-            URL obj = new URL(apiUrl);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setDoOutput(true);
-            con.setRequestProperty(REQUEST_CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
-            con.setRequestProperty(REQUEST_CONTENT_LENGTH, Integer.toString(postDataLength));
-
-            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-                wr.write(postData);
-            }
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
+            byte[] postData = getTokenRequestUrlParameters().getBytes(StandardCharsets.UTF_8);
+            HttpURLConnection con = executeTokenRequest(postData);
+            StringBuilder response = readTokenRequestResponse(con);
             if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 JSONObject jsonResponse = new JSONObject(response.toString());
                 accessToken = jsonResponse.get(JSON_ACCESS_TOKEN).toString();
                 currentTokenExpiry = System.currentTimeMillis() + jsonResponse.getInt(JSON_ACCESS_TOKEN_EXPIRE_DURATION) * 1000;
-                return true;
             } else {
-                throw new HttpException("Invalid response code while fetching access token: " + con.getResponseCode() + "\n response: " + response);
+                throw new AuthenticationException("Invalid response code while fetching access token: " + con.getResponseCode() + "\n response: " + response);
             }
-
-        } catch (IOException | JSONException | HttpException e) {
-            logger.error("Error fetching access token: " + e.getMessage(), e);
+        } catch (IOException | JSONException e) {
+            throw new AuthenticationException(e.getMessage());
         }
-        return false;
+    }
+
+    private StringBuilder readTokenRequestResponse(HttpURLConnection con) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        return response;
+    }
+
+    private HttpURLConnection executeTokenRequest(byte[] postData) throws IOException {
+        URL obj = new URL(apiUrl);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setDoOutput(true);
+        con.setRequestProperty(REQUEST_CONTENT_TYPE, APPLICATION_FORM_URLENCODED);
+        con.setRequestProperty(REQUEST_CONTENT_LENGTH, Integer.toString(postData.length));
+
+        try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+            wr.write(postData);
+        }
+        return con;
+    }
+
+    private String getTokenRequestUrlParameters() throws UnsupportedEncodingException {
+        return GRANT_TYPE + CLIENT_CREDENTIALS
+                + CLIENT_ID + clientId
+                + SCOPE + MICROSOFT_GRAPH
+                + CLIENT_SECRET + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8.toString());
     }
 }
