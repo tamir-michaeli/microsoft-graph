@@ -56,7 +56,7 @@ For a complete list of options, see the configuration parameters below.👇
 | **azureADClient.tenantId** | **Required**. Azure AD Tenant ID. <br /> Can be found in the `Overview` section of the app you registered in step 1. |
 | **azureADClient.clientId** | **Required**. Application Client ID. <br /> Can be found in the `Overview` section of the app you registered in step 1. |
 | **azureADClient.clientSecret** | **Required**.  The Application Client Secret you created in step 2.  |
-| **azureADClient.pullInterval** | Time interval, in seconds, to pull the logs with the Graph API. <br /> **Default**: `300` |
+| **azureADClient.pullIntervalSeconds** | Time interval, in seconds, to pull the logs with the Graph API. <br /> **Default**: `300` |
 
 #### Logz.io Sender parameters
 

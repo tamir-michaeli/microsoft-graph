@@ -3,15 +3,13 @@ package objects;
 import java.io.File;
 
 public class LogzioJavaSenderParams {
-
-
     private static String HTTPS_PREFIX = "https://";
     private static String PORT_SUFFIX = ":8071";
     private String listenerUrl = HTTPS_PREFIX + "listener.logz.io" + PORT_SUFFIX;
-    private String type = "Microsoft-Graph";
+    private final String type = "Microsoft-Graph";
     private String accountToken;
-    private int threadPoolSize = 3;
-    private boolean compressRequests = true;
+    private final int threadPoolSize = 3;
+    private final boolean compressRequests = true;
     private boolean fromDisk = true;
     private int senderDrainIntervals = 30;
 

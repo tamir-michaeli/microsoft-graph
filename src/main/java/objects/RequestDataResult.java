@@ -16,9 +16,9 @@ public class RequestDataResult {
         this.succeed = true;
     }
 
-    public void setRequestDataResult(RequestDataResult orig) {
-        this.succeed = orig.isSucceed();
-        this.data = orig.data;
+    public void setRequestDataResult(RequestDataResult res) {
+        this.succeed = res.isSucceed();
+        this.data = res.data;
     }
 
     public boolean isSucceed() {

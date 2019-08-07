@@ -40,12 +40,12 @@ public class MSGraphRequestExecutor {
 
     public MSGraphRequestExecutor(AzureADClient client) throws AuthenticationException {
         auth = new AuthorizationManager(client);
-        this.interval = client.getPullInterval() * 1000;
+        this.interval = client.getPullIntervalSeconds() * 1000;
     }
 
     public MSGraphRequestExecutor(AzureADClient client, Authornicator authornicator) {
         this.auth = authornicator;
-        this.interval = client.getPullInterval();
+        this.interval = client.getPullIntervalSeconds();
     }
 
     private Response executeRequest(String url) throws IOException, AuthenticationException {

@@ -87,18 +87,17 @@ public class FetchSendManager implements Shutdownable {
     }
 
     private LogzioSender getLogzioSender() {
-
         senderExecutors = Executors.newScheduledThreadPool(logzioSenderParams.getThreadPoolSize());
         try {
             HttpsRequestConfiguration requestConf = getSenderRequestConfig();
             SenderStatusReporter statusReporter = StatusReporterFactory.newSenderStatusReporter(Logger.getLogger(LogzioJavaSenderParams.class));
             LogzioSender.Builder senderBuilder = LogzioSender
-                    .builder();
-            senderBuilder.setTasksExecutor(senderExecutors);
-            senderBuilder.setReporter(statusReporter);
-            senderBuilder.setHttpsRequestConfiguration(requestConf);
-            senderBuilder.setDebug(logger.isDebugEnabled());
-            senderBuilder.setDrainTimeoutSec(logzioSenderParams.getSenderDrainIntervals());
+                    .builder()
+                    .setTasksExecutor(senderExecutors)
+                    .setReporter(statusReporter)
+                    .setHttpsRequestConfiguration(requestConf)
+                    .setDebug(logger.isDebugEnabled())
+                    .setDrainTimeoutSec(logzioSenderParams.getSenderDrainIntervals());
             senderBuilder = logzioSenderParams.isFromDisk() ?  setFromDiskParams(senderBuilder) : setInMemoryParams(senderBuilder);
             return senderBuilder.build();
         } catch (LogzioParameterErrorException e) {

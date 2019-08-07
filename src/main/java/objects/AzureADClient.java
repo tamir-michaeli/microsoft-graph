@@ -5,7 +5,7 @@ public class AzureADClient {
     private String tenantId;
     private String clientId;
     private String clientSecret;
-    private int pullInterval = 300;
+    private int pullIntervalSeconds = 300;
 
     public AzureADClient() {
     }
@@ -22,8 +22,8 @@ public class AzureADClient {
         this.clientSecret = clientSecret;
     }
 
-    public void setPullInterval(int pullInterval) {
-        this.pullInterval = pullInterval;
+    public void setPullIntervalSeconds(int pullIntervalSeconds) {
+        this.pullIntervalSeconds = pullIntervalSeconds;
     }
 
     public String getTenantId() {
@@ -38,8 +38,8 @@ public class AzureADClient {
         return clientSecret;
     }
 
-    public int getPullInterval() {
-        return pullInterval;
+    public int getPullIntervalSeconds() {
+        return pullIntervalSeconds;
     }
 
 }

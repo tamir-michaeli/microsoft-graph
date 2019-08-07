@@ -18,7 +18,7 @@ public class ConfigurationTests {
         Assert.assertEquals("sample-client-id",configuration.getAzureADClient().getClientId());
         Assert.assertEquals("sample-tenant-id",configuration.getAzureADClient().getTenantId());
         Assert.assertEquals("sample+client:secret*",configuration.getAzureADClient().getClientSecret());
-        Assert.assertEquals(300 ,configuration.getAzureADClient().getPullInterval());
+        Assert.assertEquals(300 ,configuration.getAzureADClient().getPullIntervalSeconds());
 
         Assert.assertEquals("sampleAccountToken",configuration.getSenderParams().getAccountToken());
         Assert.assertEquals("https://listener.logz.io:8071", configuration.getSenderParams().getListenerUrl());
@@ -33,7 +33,7 @@ public class ConfigurationTests {
         Assert.assertEquals("sample-client-id",configuration.getAzureADClient().getClientId());
         Assert.assertEquals("sample-tenant-id",configuration.getAzureADClient().getTenantId());
         Assert.assertEquals("sample+client:secret*",configuration.getAzureADClient().getClientSecret());
-        Assert.assertEquals(600 ,configuration.getAzureADClient().getPullInterval());
+        Assert.assertEquals(600 ,configuration.getAzureADClient().getPullIntervalSeconds());
 
 
         Assert.assertEquals("sampleAccountToken",configuration.getSenderParams().getAccountToken());

@@ -2,7 +2,7 @@ azureADClient:
   tenantId: "sample-tenant-id"
   clientId: "sample-client-id"
   clientSecret: "sample+client:secret*"
-  pullInterval: 600
+  pullIntervalSeconds: 600
 
 senderParams:
   accountToken: "sampleAccountToken"

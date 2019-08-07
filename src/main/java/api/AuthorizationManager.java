@@ -55,7 +55,6 @@ public class AuthorizationManager implements Authornicator {
         if (System.currentTimeMillis() > currentTokenExpiry - ONE_MINUTES_IN_MILLIS) { // 1 minutes safety
             try {
                retrieveToken();
-
             } catch (AuthenticationException e) {
                 logger.error("Error fetching access token: " + e);
                 return null;
