@@ -43,9 +43,8 @@ public class MSClient {
         }
         Office365Apis officeApis = new Office365Apis(executor);
 
-        ArrayList<JsonArrayRequest> requests = new ArrayList<>();
-        requests.addAll(asList(officeApis::getSignIns,officeApis::getDirectoryAudits));
-        FetchSendManager manager = new FetchSendManager(requests, configuration.getSenderParams(), configuration.getAzureADClient().getPullInterval());
+        ArrayList<JsonArrayRequest> requests = new ArrayList<>(asList(officeApis::getSignIns,officeApis::getDirectoryAudits));
+        FetchSendManager manager = new FetchSendManager(requests, configuration.getSenderParams(), configuration.getAzureADClient().getPullIntervalSeconds());
         manager.start();
     }
 
@@ -65,10 +64,10 @@ public class MSClient {
             checkNotNull(config.getAzureADClient().getClientSecret());
         } catch (NullPointerException e) {
             throw new NullPointerException("The following parameters are mandatory: \n" +
-                        "azureADClient.tenantId, \n" +
-                        "azureADClient.clientId,\n" +
-                        "azureADClient.clientSecret,\n" +
-                        "logzioSenderParameters.accountToken");
+                    "azureADClient.tenantId, \n" +
+                    "azureADClient.clientId,\n" +
+                    "azureADClient.clientSecret,\n" +
+                    "logzioSenderParameters.accountToken");
         }
         return config;
     }
