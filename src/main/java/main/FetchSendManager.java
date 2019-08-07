@@ -98,7 +98,11 @@ public class FetchSendManager implements Shutdownable {
                     .setHttpsRequestConfiguration(requestConf)
                     .setDebug(logger.isDebugEnabled())
                     .setDrainTimeoutSec(logzioSenderParams.getSenderDrainIntervals());
-            senderBuilder = logzioSenderParams.isFromDisk() ?  setFromDiskParams(senderBuilder) : setInMemoryParams(senderBuilder);
+            if (logzioSenderParams.isFromDisk()) {
+                setFromDiskParams(senderBuilder);
+            } else {
+                setInMemoryParams(senderBuilder);
+            }
             return senderBuilder.build();
         } catch (LogzioParameterErrorException e) {
             logger.error("problem in one or more parameters with error " + e.getMessage(), e);
@@ -116,15 +120,15 @@ public class FetchSendManager implements Shutdownable {
                 .build();
     }
 
-    private LogzioSender.Builder setInMemoryParams(LogzioSender.Builder senderBuilder) {
-       return senderBuilder.withInMemoryQueue()
+    private void setInMemoryParams(LogzioSender.Builder senderBuilder) {
+        senderBuilder.withInMemoryQueue()
                 .setCapacityInBytes(logzioSenderParams.getInMemoryQueueCapacityInBytes())
                 .setLogsCountLimit(logzioSenderParams.getLogsCountLimit())
                 .endInMemoryQueue();
     }
 
-    private LogzioSender.Builder setFromDiskParams(LogzioSender.Builder senderBuilder) {
-         return senderBuilder.withDiskQueue()
+    private void setFromDiskParams(LogzioSender.Builder senderBuilder) {
+          senderBuilder.withDiskQueue()
                 .setQueueDir(logzioSenderParams.getQueueDir())
                 .setCheckDiskSpaceInterval(logzioSenderParams.getDiskSpaceCheckInterval())
                 .setFsPercentThreshold(logzioSenderParams.getFileSystemFullPercentThreshold())

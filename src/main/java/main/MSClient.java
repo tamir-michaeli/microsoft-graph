@@ -16,7 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import static io.logz.sender.com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Arrays.asList;
 
 public class MSClient {
@@ -57,18 +57,12 @@ public class MSClient {
         InputStream inputStream = new FileInputStream(new File(yamlFile));
         MSGraphConfiguration config = yaml.load(inputStream);
 
-        try {
-            checkNotNull(config.getSenderParams().getAccountToken());
-            checkNotNull(config.getAzureADClient().getTenantId());
-            checkNotNull(config.getAzureADClient().getClientId());
-            checkNotNull(config.getAzureADClient().getClientSecret());
-        } catch (NullPointerException e) {
-            throw new NullPointerException("The following parameters are mandatory: \n" +
-                    "azureADClient.tenantId, \n" +
-                    "azureADClient.clientId,\n" +
-                    "azureADClient.clientSecret,\n" +
-                    "logzioSenderParameters.accountToken");
-        }
+        checkNotNull(config.getSenderParams(), "Config file format error, logzioSenderParameters can't be empty");
+        checkNotNull(config.getAzureADClient(), "Config file format error, azureADClient can't be empty");
+        checkNotNull(config.getSenderParams().getAccountToken(), "Parameter logzioSenderParameters.accountToken is mandatory");
+        checkNotNull(config.getAzureADClient().getTenantId(), "Parameter azureADClient.tenantId is mandatory");
+        checkNotNull(config.getAzureADClient().getClientId(), "Parameter azureADClient.clientId is mandatory");
+        checkNotNull(config.getAzureADClient().getClientSecret(), "Parameter azureADClient.clientSecret is mandatory");
         return config;
     }
 }
