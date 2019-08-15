@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import static java.lang.Thread.sleep;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -96,26 +98,25 @@ public class FetchSendTests {
         mockServer.stop();
     }
 
+    private RequestDataResult getSampleResult() {
+        File signinsFile = new File(getClass().getClassLoader().getResource("sampleSignins.json").getFile());
+
+        try {
+            String content = FileUtils.readFileToString(signinsFile, "utf-8");
+            JSONTokener tokener = new JSONTokener(content);
+            JSONObject object = new JSONObject(tokener);
+            return new RequestDataResult(object.getJSONArray("value"));
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Test
     public void FetchSendTest() throws InterruptedException, JSONException {
         int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
-        requests.add(new JsonArrayRequest() {
-            @Override
-            public RequestDataResult getResult() {
-                File signinsFile = new File(getClass().getClassLoader().getResource("sampleSignins.json").getFile());
-
-                try {
-                    String content = FileUtils.readFileToString(signinsFile, "utf-8");
-                    JSONTokener tokener = new JSONTokener(content);
-                    JSONObject object = new JSONObject(tokener);
-                    return new RequestDataResult(object.getJSONArray("value"));
-                } catch (JSONException | IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        });
+        requests.add(this::getSampleResult);
 
         FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
         manager.start();
@@ -194,6 +195,29 @@ public class FetchSendTests {
                 , () -> "sampleAccessToken");
         JSONArray jsonArray = requestExecutor.getAllPages("http://localhost:8070/chainRequest");
         Assert.assertEquals(3, jsonArray.length());
+    }
+
+    @Test
+    public void interruptMidSendTest() {
+        int initialRequestsCount = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
+        ArrayList<JsonArrayRequest> requests = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            requests.add(this::getSampleResult);
+        }
+        FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
+        manager.start();
+
+        Thread storageThread = new Thread(manager::pullAndSendData);
+        storageThread.start();
+        try {
+            sleep(1000);
+            storageThread.interrupt();
+            sleep(3000);
+            HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+            Assert.assertEquals(initialRequestsCount + 100, recordedRequests.length);
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
 }
