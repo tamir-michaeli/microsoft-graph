@@ -1,0 +1,16 @@
+objects/MSGraphConfiguration.class
+utils/Shutdownable.class
+api/Office365Apis.class
+objects/AzureADClient.class
+objects/JsonArrayRequest.class
+objects/RequestDataResult.class
+main/MSClient.class
+utils/HangupInterceptor.class
+utils/StatusReporterFactory.class
+main/Main.class
+api/MSGraphRequestExecutor.class
+utils/StatusReporterFactory$1.class
+api/AuthorizationManager.class
+main/FetchSendManager.class
+objects/LogzioJavaSenderParams.class
+utils/Authornicator.class

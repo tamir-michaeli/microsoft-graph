@@ -13,6 +13,7 @@ import org.junit.*;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
+import org.mockserver.model.RequestDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -122,12 +124,12 @@ public class FetchSendTests {
         manager.start();
         manager.pullAndSendData();
         Thread.sleep(2000);
-        HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+        RequestDefinition[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
         Assert.assertEquals(initialRequestsLength + 1, recordedRequests.length);
-        JSONObject jsonObject = new JSONObject(recordedRequests[initialRequestsLength].getBodyAsString());
-        Assert.assertEquals("aaaaa-bbbb-cccc-dddd-123456789", jsonObject.getString("id"));
-        Assert.assertEquals("John Smith", jsonObject.getString("userDisplayName"));
-        Assert.assertEquals("john.s@gmail.com", jsonObject.getString("userPrincipalName"));
+        Map<String,String> paramsMap=mapFromJSONObject(new JSONObject(recordedRequests[initialRequestsLength].toString()).getJSONObject("body"));
+        Assert.assertEquals("aaaaa-bbbb-cccc-dddd-123456789", paramsMap.get("id"));
+        Assert.assertEquals("John Smith", paramsMap.get("userDisplayName"));
+        Assert.assertEquals("john.s@gmail.com", paramsMap.get("userPrincipalName"));
         manager.shutdown();
     }
 
@@ -141,10 +143,10 @@ public class FetchSendTests {
         manager.start();
         manager.pullAndSendData();
         Thread.sleep(2000);
-        HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+        RequestDefinition[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
         Assert.assertEquals(initialRequestsLength + 1, recordedRequests.length);
-        JSONObject jsonObject = new JSONObject(recordedRequests[initialRequestsLength].getBodyAsString());
-        Assert.assertEquals(1, jsonObject.getInt("key"));
+        Map<String,String> paramsMap=mapFromJSONObject(new JSONObject(recordedRequests[initialRequestsLength].toString()).getJSONObject("body"));
+        Assert.assertEquals(1, Integer.parseInt(paramsMap.get("key")));
         manager.shutdown();
 
     }
@@ -160,7 +162,7 @@ public class FetchSendTests {
         manager.start();
         manager.pullAndSendData();
         Thread.sleep(2000);
-        HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+        RequestDefinition[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
         Assert.assertEquals(initialRequestsLength, recordedRequests.length);
         manager.shutdown();
 
@@ -213,11 +215,22 @@ public class FetchSendTests {
             sleep(1000);
             storageThread.interrupt();
             sleep(3000);
-            HttpRequest[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
+            RequestDefinition[] recordedRequests = mockServerClient.retrieveRecordedRequests(request().withMethod("POST"));
             Assert.assertEquals(initialRequestsCount + 100, recordedRequests.length);
         } catch (InterruptedException e) {
             Assert.fail(e.getMessage());
         }
     }
 
+    private Map<String,String> mapFromJSONObject(JSONObject json){
+        String[] paramString= json.getString("string").replaceAll("[{}\\\u0000\"]","")
+                .split("\\r?\\n")[0].split(",");
+        Map<String,String> paramsMap= new HashMap<>();
+        for(String string: paramString){
+            String[] params=string.split(":",2);
+            paramsMap.put(params[0],params[1]);
+        }
+
+        return paramsMap;
+    }
 }
