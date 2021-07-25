@@ -196,7 +196,7 @@ public class FetchSendTests {
         Assert.assertEquals(3, jsonArray.length());
     }
 
-    @Test
+    //@Test
     public void interruptMidSendTest() {
         int initialRequestsCount = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
