@@ -148,7 +148,6 @@ public class FetchSendTests {
         Map<String,String> paramsMap=mapFromJSONObject(new JSONObject(recordedRequests[initialRequestsLength].toString()).getJSONObject("body"));
         Assert.assertEquals(1, Integer.parseInt(paramsMap.get("key")));
         manager.shutdown();
-
     }
 
 
