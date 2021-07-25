@@ -148,8 +148,7 @@ public class FetchSendTests {
         Assert.assertEquals(1, Integer.parseInt(paramsMap.get("key")));
         manager.shutdown();
     }
-
-
+    
     //@Test
     public void alwaysFalseRetryTest() throws InterruptedException {
         int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
@@ -206,7 +205,6 @@ public class FetchSendTests {
         }
         FetchSendManager manager = new FetchSendManager(requests, senderParams, 10);
         manager.start();
-
         Thread storageThread = new Thread(manager::pullAndSendData);
         storageThread.start();
         try {
