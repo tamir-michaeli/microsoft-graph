@@ -148,7 +148,7 @@ public class FetchSendTests {
         Assert.assertEquals(1, Integer.parseInt(paramsMap.get("key")));
         manager.shutdown();
     }
-    
+
     //@Test
     public void alwaysFalseRetryTest() throws InterruptedException {
         int initialRequestsLength = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
@@ -196,7 +196,7 @@ public class FetchSendTests {
         Assert.assertEquals(3, jsonArray.length());
     }
 
-    //@Test
+    @Test
     public void interruptMidSendTest() {
         int initialRequestsCount = mockServerClient.retrieveRecordedRequests(request().withMethod("POST")).length;
         ArrayList<JsonArrayRequest> requests = new ArrayList<>();
